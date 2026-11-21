@@ -3,49 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>סימולטור S&P 500 למשקיע הישראלי — 70 שנות היסטוריה, אינפלציה ושער הדולר</title>
+  <title>סימולטור השקעות למשקיע הישראלי: S&P 500 מול הבורסה הישראלית (ת"א-125)</title>
 
-  <!-- Google Fonts: Heebo (Hebrew) + Inter (Numbers) -->
+  <!-- Google Fonts: Heebo & Assistant for crisp Hebrew typography + Inter for tabular numbers -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Heebo:wght@300;400;500;600;700;800&family=Inter:wght@500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- Tailwind CSS via CDN -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Heebo', 'Inter', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              50: '#eff6ff',
-              100: '#dbeafe',
-              500: '#3b82f6',
-              600: '#2563eb',
-              700: '#1d4ed8',
-            }
+            sans: ['Heebo', 'Assistant', 'Inter', 'sans-serif'],
           }
         }
       }
     };
   </script>
 
-  <!-- Chart.js via CDN -->
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <style>
     body {
-      font-family: 'Heebo', 'Inter', sans-serif;
+      font-family: 'Heebo', 'Assistant', 'Inter', sans-serif;
       background-color: #f8fafc;
       color: #0f172a;
     }
     .tabular-nums {
       font-variant-numeric: tabular-nums;
     }
-    /* Custom range slider styling for crisp touch & desktop interaction */
+    .ltr-num {
+      direction: ltr;
+      display: inline-block;
+    }
+    /* Custom range sliders */
     input[type="range"] {
       -webkit-appearance: none;
       appearance: none;
@@ -78,10 +73,9 @@
       box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
       cursor: pointer;
     }
-    .ltr-num {
-      direction: ltr;
-      display: inline-block;
-    }
+    .slider-emerald::-webkit-slider-thumb { background: #10b981; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.35); }
+    .slider-amber::-webkit-slider-thumb { background: #d97706; box-shadow: 0 2px 6px rgba(217, 119, 6, 0.35); }
+    .slider-purple::-webkit-slider-thumb { background: #7c3aed; box-shadow: 0 2px 6px rgba(124, 58, 237, 0.35); }
   </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
@@ -89,292 +83,400 @@
   <!-- Top Header -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-blue-600 to-emerald-500 flex items-center justify-center text-white shadow-md shrink-0">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <!-- Brand & Title -->
+        <div class="flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center text-white shadow-md shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
             </svg>
           </div>
           <div>
             <h1 class="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">
-              סימולטור S&P 500 למשקיע הישראלי
+              סימולטור השקעות למשקיע הישראלי: S&P 500 מול הבורסה הישראלית (ת"א-125)
             </h1>
-            <p class="text-xs sm:text-sm text-slate-500">
-              70 שנות היסטוריה (1956–2025) • אינפלציה בישראל ובארה"ב • שער הדולר • מס רווחי הון
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">
+              השוואה מקיפה בין מדד S&P 500 למדד ת"א-125 בהתחשב באינפלציה בישראל ובארה"ב, שער הדולר (USD/ILS) ומס רווחי הון 25% ריאלי
             </p>
           </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <nav class="flex bg-slate-100 p-1 rounded-xl gap-1 overflow-x-auto" aria-label="לשוניות סימולטור">
-          <button id="tabBtn1" onclick="switchTab('tab1')" class="tab-btn flex-1 md:flex-none whitespace-nowrap px-4 py-2.5 rounded-lg text-sm font-bold transition-all bg-white text-blue-700 shadow-sm">
-            1. בחינה היסטורית
+        <!-- 3 Navigation Tabs -->
+        <nav class="flex bg-slate-100 p-1 rounded-xl gap-1 overflow-x-auto shrink-0" aria-label="לשוניות סימולטור">
+          <button id="tabBtn1" onclick="switchTab('tab1')" class="tab-btn whitespace-nowrap px-3.5 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-white text-blue-700 shadow-sm">
+            1. בחינה היסטורית (S&P 500 מול ת"א-125)
           </button>
-          <button id="tabBtn2" onclick="switchTab('tab2')" class="tab-btn flex-1 md:flex-none whitespace-nowrap px-4 py-2.5 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-slate-900">
-            2. טווחי השקעה (מתגלגל)
+          <button id="tabBtn2" onclick="switchTab('tab2')" class="tab-btn whitespace-nowrap px-3.5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-600 hover:text-slate-900">
+            2. טווחי השקעה מתגלגלים (1–33 שנה)
           </button>
-          <button id="tabBtn3" onclick="switchTab('tab3')" class="tab-btn flex-1 md:flex-none whitespace-nowrap px-4 py-2.5 rounded-lg text-sm font-semibold transition-all text-slate-600 hover:text-slate-900">
-            3. סימולטור עתידי
+          <button id="tabBtn3" onclick="switchTab('tab3')" class="tab-btn whitespace-nowrap px-3.5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-all text-slate-600 hover:text-slate-900">
+            3. סימולטור עתידי (כולל ת"א-125 וגידור)
           </button>
         </nav>
       </div>
     </div>
   </header>
 
-  <!-- Subtle Notification Banner (replaces alerts) -->
-  <div id="toastBanner" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-lg flex items-center gap-2 transition-opacity">
+  <!-- Toast Notification (replaces alert) -->
+  <div id="toastBanner" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-sm font-medium px-5 py-3 rounded-xl shadow-xl flex items-center gap-2 transition-all">
     <span id="toastMessage"></span>
   </div>
 
-  <!-- Main Content Container -->
+  <!-- Main Content -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
     <!-- ===================================================================== -->
-    <!-- TAB 1: HISTORICAL EXPLORER (INFLATION & USD/ILS)                      -->
+    <!-- TAB 1: HISTORICAL COMPARISON (S&P 500 vs TA-125 vs SAFE BOND)         -->
     <!-- ===================================================================== -->
     <section id="tab1" class="tab-panel space-y-6">
-      <!-- Controls Card -->
+
+      <!-- Controls Panel -->
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-5">
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-100 pb-3">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 border-b border-slate-100 pb-3.5">
           <div>
-            <h2 class="text-base font-bold text-slate-900">הגדרות בחינה היסטורית</h2>
-            <p class="text-xs text-slate-500">בדוק מה קרה לכסף שלך בכל תקופה היסטורית בהתחשב באינפלציה, דיבידנדים ושער הדולר</p>
+            <h2 class="text-base font-bold text-slate-900">בחינה היסטורית: S&P 500 מול ת"א-125 והשקעה בטוחה</h2>
+            <p class="text-xs text-slate-500">בחרו תקופה, סכום השקעה ומטבע כדי להשוות תשואה ריאלית, ירידה מקסימלית והשפעת שער הדולר</p>
           </div>
-          <!-- Quick Presets -->
-          <div class="flex flex-wrap gap-1.5">
-            <button onclick="applyPreset(1999, 2009)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 transition">העשור האבוד (1999–2009)</button>
-            <button onclick="applyPreset(1973, 1982)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 transition">משבר הנפט (1973–1982)</button>
-            <button onclick="applyPreset(2006, 2025)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition">20 שנה אחרונות (2006–2025)</button>
-            <button onclick="applyPreset(1991, 2025)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition">35 שנה (1991–2025)</button>
-            <button onclick="applyPreset(1956, 2025)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition">70 שנה מלאות (1956–2025)</button>
-          </div>
+          <!-- CSV Export Button -->
+          <button onclick="exportTab1CSV()" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-sm transition self-start md:self-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            ייצוא נתונים ל-CSV
+          </button>
         </div>
 
-        <!-- Primary Inputs Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <!-- Currency & Mode -->
-          <div class="sm:col-span-2">
-            <label for="t1Mode" class="block text-xs font-bold text-slate-700 mb-1.5">מטבע ומצב חישוב</label>
-            <select id="t1Mode" onchange="onTab1ModeChange()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-medium text-slate-900 focus:border-blue-500 focus:bg-white focus:outline-none">
-              <option value="real_ils" selected>ריאלי בשקלים (₪ — כולל שער הדולר ובניכוי אינפלציה ישראלית)</option>
-              <option value="nom_ils">נומינלי בשקלים (₪ — כולל שער הדולר)</option>
-              <option value="real_usd">ריאלי בדולר ($ — בניכוי אינפלציה אמריקאית)</option>
-              <option value="nom_usd">נומינלי בדולר ($)</option>
-            </select>
-          </div>
+        <!-- Quick Presets -->
+        <div class="flex flex-wrap gap-2">
+          <button onclick="applyPreset(1992, 2025, 'ils')" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 transition">השוואה מלאה ת"א-125 מול S&P 500 (1992–2025)</button>
+          <button onclick="applyPreset(1956, 2025, 'usd')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition">70 שנה S&P 500 (1956–2025)</button>
+          <button onclick="applyPreset(2000, 2009, 'ils')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-50 text-red-700 hover:bg-red-100 border border-red-200 transition">העשור האבוד (2000–2009)</button>
+          <button onclick="applyPreset(2008, 2025, 'ils')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 transition">מאז משבר 2008 (2008–2025)</button>
+          <button onclick="applyPreset(2020, 2025, 'ils')" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 transition">קורונה עד היום (2020–2025)</button>
+        </div>
 
+        <!-- Inputs Row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
           <!-- Start Year -->
           <div>
             <label for="t1StartYear" class="block text-xs font-bold text-slate-700 mb-1.5">שנת כניסה</label>
-            <select id="t1StartYear" onchange="renderTab1()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-900 focus:border-blue-500 focus:bg-white focus:outline-none tabular-nums"></select>
+            <select id="t1StartYear" onchange="renderTab1()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-bold text-slate-900 focus:border-blue-500 focus:bg-white focus:outline-none tabular-nums"></select>
           </div>
 
           <!-- End Year -->
           <div>
             <label for="t1EndYear" class="block text-xs font-bold text-slate-700 mb-1.5">שנת יציאה (כולל)</label>
-            <select id="t1EndYear" onchange="renderTab1()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-900 focus:border-blue-500 focus:bg-white focus:outline-none tabular-nums"></select>
+            <select id="t1EndYear" onchange="renderTab1()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-bold text-slate-900 focus:border-blue-500 focus:bg-white focus:outline-none tabular-nums"></select>
           </div>
 
           <!-- Initial Investment -->
           <div>
             <label for="t1Initial" class="block text-xs font-bold text-slate-700 mb-1.5">השקעה ראשונית (<span class="t1CurrSym">₪</span>)</label>
-            <input id="t1Initial" type="number" min="0" step="5000" value="100000" oninput="renderTab1()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-900 focus:border-blue-500 focus:bg-white focus:outline-none tabular-nums" />
+            <input id="t1Initial" type="number" min="0" step="5000" value="100000" oninput="renderTab1()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-bold text-slate-900 focus:border-blue-500 focus:bg-white focus:outline-none tabular-nums" />
           </div>
 
           <!-- Monthly Deposit -->
           <div>
             <label for="t1Monthly" class="block text-xs font-bold text-slate-700 mb-1.5">הפקדה חודשית (<span class="t1CurrSym">₪</span>)</label>
-            <input id="t1Monthly" type="number" min="0" step="500" value="0" oninput="renderTab1()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-semibold text-slate-900 focus:border-blue-500 focus:bg-white focus:outline-none tabular-nums" />
+            <input id="t1Monthly" type="number" min="0" step="250" value="1000" oninput="renderTab1()" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-bold text-slate-900 focus:border-blue-500 focus:bg-white focus:outline-none tabular-nums" />
           </div>
 
-          <!-- Checkboxes -->
-          <div class="sm:col-span-2 flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 lg:pt-5">
-            <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-              <input id="t1Dividends" type="checkbox" checked onchange="renderTab1()" class="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500" />
-              <span class="text-sm font-medium text-slate-700">השקעה מחדש של דיבידנדים</span>
-            </label>
-            <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-              <input id="t1Tax" type="checkbox" onchange="renderTab1()" class="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500" />
-              <span class="text-sm font-medium text-slate-700">ניכוי מס רווחי הון (25% ריאלי)</span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Custom USD/ILS Override & Shekel Note -->
-        <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-          <div class="flex flex-col sm:flex-row sm:items-center gap-3">
-            <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-              <input id="t1CustomFxToggle" type="checkbox" onchange="onCustomFxToggle()" class="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500" />
-              <span class="text-xs sm:text-sm font-bold text-slate-800">בדיקת "מה אם" — שער דולר מותאם אישית (מאפשר גם לפני 1986)</span>
-            </label>
-            <div id="t1CustomFxInputs" class="hidden flex items-center gap-2 text-xs">
-              <span class="text-slate-600 font-medium">שער כניסה:</span>
-              <input id="t1FxStart" type="number" step="0.05" min="1" max="10" value="3.70" oninput="renderTab1()" class="w-20 rounded-lg border border-slate-300 bg-white px-2 py-1 text-center font-bold tabular-nums" />
-              <span class="text-slate-600 font-medium">שער יציאה:</span>
-              <input id="t1FxEnd" type="number" step="0.05" min="1" max="10" value="3.70" oninput="renderTab1()" class="w-20 rounded-lg border border-slate-300 bg-white px-2 py-1 text-center font-bold tabular-nums" />
+          <!-- Real vs Nominal Segmented Toggle -->
+          <div>
+            <span class="block text-xs font-bold text-slate-700 mb-1.5">אינפלציה</span>
+            <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-xl">
+              <button id="t1RealBtn" onclick="setTab1Real(true)" class="py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition">ריאלי</button>
+              <button id="t1NomBtn" onclick="setTab1Real(false)" class="py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition">נומינלי</button>
             </div>
           </div>
-          <p id="t1IlsNote" class="text-xs text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100">
-            ℹ️ נתוני השקל החדש ואינפלציה ישראלית היסטורית זמינים מ-1986 (לאחר תוכנית הייצוב של 1985).
-          </p>
-        </div>
-      </div>
 
-      <!-- KPI Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- KPI 1: Final Value -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
-          <div class="flex items-center justify-between">
-            <span id="kpi1Label" class="text-xs font-bold text-slate-500">שווי תיק סופי (ריאלי)</span>
-            <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
-          </div>
-          <div id="kpi1Value" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2 tabular-nums">—</div>
-          <div id="kpi1Sub" class="text-xs text-slate-500 mt-1.5 tabular-nums">—</div>
-        </div>
-
-        <!-- KPI 2: Purchasing Power Multiplier -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-slate-500">מכפיל כוח קנייה (×)</span>
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-          </div>
-          <div id="kpi2Value" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-2 tabular-nums">—</div>
-          <div id="kpi2Sub" class="text-xs text-slate-500 mt-1.5 tabular-nums">—</div>
-        </div>
-
-        <!-- KPI 3: Real CAGR -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
-          <div class="flex items-center justify-between">
-            <span id="kpi3Label" class="text-xs font-bold text-slate-500">תשואה שנתית ריאלית ממוצעת (CAGR)</span>
-            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
-          </div>
-          <div id="kpi3Value" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2 tabular-nums">—</div>
-          <div id="kpi3Sub" class="text-xs text-slate-500 mt-1.5 tabular-nums">—</div>
-        </div>
-
-        <!-- KPI 4: Max Drawdown + FX Impact -->
-        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-slate-500">ירידה מקסימלית מהשיא והשפעת הדולר</span>
-            <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-          </div>
-          <div id="kpi4Value" class="text-2xl sm:text-3xl font-extrabold text-red-600 mt-2 tabular-nums">—</div>
-          <div id="kpi4Sub" class="text-xs text-slate-600 mt-1.5 tabular-nums font-medium">—</div>
-        </div>
-      </div>
-
-      <!-- Main Chart Card -->
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <!-- Currency Segmented Toggle -->
           <div>
-            <h3 id="t1ChartTitle" class="text-base font-bold text-slate-900">התפתחות התיק: שווי נומינלי מול כוח קנייה ריאלי</h3>
-            <p id="t1ChartSub" class="text-xs text-slate-500">השוואה בין הסכום המופיע בחשבון לבין כוח הקנייה האמיתי שלו במונחי שנת הכניסה</p>
+            <span class="block text-xs font-bold text-slate-700 mb-1.5">מטבע תצוגה</span>
+            <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-xl">
+              <button id="t1IlsBtn" onclick="setTab1Currency('ils')" class="py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition">שקלים (₪)</button>
+              <button id="t1UsdBtn" onclick="setTab1Currency('usd')" class="py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition">דולר ($)</button>
+            </div>
           </div>
-          <div class="inline-flex bg-slate-100 p-1 rounded-xl self-start sm:self-auto">
-            <button id="t1ChartModeLine" onclick="setTab1ChartType('line')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition">התפתחות התיק</button>
-            <button id="t1ChartModeBar" onclick="setTab1ChartType('bar')" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition">תשואות שנתיות (%)</button>
+        </div>
+
+        <!-- Tax & What-If FX Row -->
+        <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+              <input id="t1Tax" type="checkbox" onchange="renderTab1()" class="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500" />
+              <span class="text-xs sm:text-sm font-bold text-slate-800">ניכוי מס רווחי הון (25% ריאלי)</span>
+            </label>
+
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+              <input id="t1WhatIfFxToggle" type="checkbox" onchange="onWhatIfFxToggle()" class="w-4 h-4 rounded text-amber-600 border-slate-300 focus:ring-amber-500" />
+              <span class="text-xs sm:text-sm font-bold text-slate-800">בדיקת "מה אם" — שער דולר בסוף התקופה</span>
+            </label>
+          </div>
+
+          <!-- What-If FX Slider -->
+          <div id="t1WhatIfFxBox" class="hidden flex items-center gap-3 w-full lg:w-80">
+            <span class="text-xs font-semibold text-slate-600 whitespace-nowrap">שער יעד:</span>
+            <input id="t1WhatIfFxSlider" type="range" min="2.50" max="5.50" step="0.05" value="3.60" oninput="renderTab1()" class="w-full slider-amber" />
+            <span id="t1WhatIfFxVal" class="text-xs font-extrabold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-1 rounded-lg tabular-nums ltr-num">₪3.60</span>
+          </div>
+        </div>
+
+        <!-- Pre-1992 / Pre-1986 Info Banner -->
+        <div id="t1InfoBanner" class="hidden rounded-xl bg-blue-50 border border-blue-200 px-4 py-3 text-xs sm:text-sm text-blue-900 flex items-start gap-2.5">
+          <span class="text-base leading-none mt-0.5">ℹ️</span>
+          <span id="t1InfoBannerText"></span>
+        </div>
+      </div>
+
+      <!-- Side-by-Side KPI Comparison Cards (S&P 500 vs TA-125 vs Safe Bond) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Card 1: S&P 500 -->
+        <div id="t1CardSp" class="bg-white rounded-2xl border-2 border-emerald-500 p-5 shadow-sm flex flex-col justify-between space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+              <h3 id="t1SpTitle" class="text-sm font-extrabold text-slate-900">S&P 500 (בשקלים)</h3>
+            </div>
+            <span id="t1WinnerSp" class="hidden px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">🏆 מנצח התקופה</span>
+          </div>
+          <div>
+            <div id="t1SpFinal" class="text-2xl sm:text-3xl font-extrabold text-slate-900 tabular-nums">—</div>
+            <div id="t1SpSub" class="text-xs text-slate-500 mt-0.5 tabular-nums">—</div>
+          </div>
+          <div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100 text-center">
+            <div class="bg-slate-50 rounded-xl p-2">
+              <div class="text-[10px] text-slate-500 font-semibold">תשואה כוללת</div>
+              <div id="t1SpTotRet" class="text-xs sm:text-sm font-extrabold text-emerald-700 mt-0.5 tabular-nums">—</div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-2">
+              <div class="text-[10px] text-slate-500 font-semibold">שנתית (CAGR)</div>
+              <div id="t1SpCagr" class="text-xs sm:text-sm font-extrabold text-slate-900 mt-0.5 tabular-nums">—</div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-2">
+              <div class="text-[10px] text-slate-500 font-semibold">ירידה מקס'</div>
+              <div id="t1SpDd" class="text-xs sm:text-sm font-extrabold text-red-600 mt-0.5 tabular-nums">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: TA-125 -->
+        <div id="t1CardTa" class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+              <h3 id="t1TaTitle" class="text-sm font-extrabold text-slate-900">ת"א-125 (הבורסה הישראלית)</h3>
+            </div>
+            <span id="t1WinnerTa" class="hidden px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-blue-100 text-blue-800 border border-blue-200">🏆 מנצח התקופה</span>
+          </div>
+          <div>
+            <div id="t1TaFinal" class="text-2xl sm:text-3xl font-extrabold text-slate-900 tabular-nums">—</div>
+            <div id="t1TaSub" class="text-xs text-slate-500 mt-0.5 tabular-nums">—</div>
+          </div>
+          <div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100 text-center">
+            <div class="bg-slate-50 rounded-xl p-2">
+              <div class="text-[10px] text-slate-500 font-semibold">תשואה כוללת</div>
+              <div id="t1TaTotRet" class="text-xs sm:text-sm font-extrabold text-blue-700 mt-0.5 tabular-nums">—</div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-2">
+              <div class="text-[10px] text-slate-500 font-semibold">שנתית (CAGR)</div>
+              <div id="t1TaCagr" class="text-xs sm:text-sm font-extrabold text-slate-900 mt-0.5 tabular-nums">—</div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-2">
+              <div class="text-[10px] text-slate-500 font-semibold">ירידה מקס'</div>
+              <div id="t1TaDd" class="text-xs sm:text-sm font-extrabold text-red-600 mt-0.5 tabular-nums">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Safe Bond / Makam -->
+        <div id="t1CardSafe" class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex flex-col justify-between space-y-3">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-slate-500"></span>
+              <h3 id="t1SafeTitle" class="text-sm font-extrabold text-slate-900">השקעה בטוחה (מק"מ / אג"ח קצר)</h3>
+            </div>
+            <span id="t1WinnerSafe" class="hidden px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-slate-200 text-slate-800 border border-slate-300">🏆 מנצח התקופה</span>
+          </div>
+          <div>
+            <div id="t1SafeFinal" class="text-2xl sm:text-3xl font-extrabold text-slate-900 tabular-nums">—</div>
+            <div id="t1SafeSub" class="text-xs text-slate-500 mt-0.5 tabular-nums">—</div>
+          </div>
+          <div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100 text-center">
+            <div class="bg-slate-50 rounded-xl p-2">
+              <div class="text-[10px] text-slate-500 font-semibold">תשואה כוללת</div>
+              <div id="t1SafeTotRet" class="text-xs sm:text-sm font-extrabold text-slate-700 mt-0.5 tabular-nums">—</div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-2">
+              <div class="text-[10px] text-slate-500 font-semibold">שנתית (CAGR)</div>
+              <div id="t1SafeCagr" class="text-xs sm:text-sm font-extrabold text-slate-900 mt-0.5 tabular-nums">—</div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-2">
+              <div class="text-[10px] text-slate-500 font-semibold">שינוי הדולר</div>
+              <div id="t1FxDelta" class="text-xs sm:text-sm font-extrabold text-amber-700 mt-0.5 tabular-nums">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Primary Chart: Portfolio Growth -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 id="t1GrowthTitle" class="text-base font-bold text-slate-900">התפתחות התיק לאורך זמן: S&P 500 מול ת"א-125 והשקעה בטוחה</h3>
+            <p id="t1GrowthSub" class="text-xs text-slate-500">כולל סך הקרן שהופקדה לאורך התקופה (קו מקווקו)</p>
           </div>
         </div>
         <div class="relative w-full h-80 sm:h-96">
-          <canvas id="t1Chart"></canvas>
+          <canvas id="t1GrowthChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Secondary Chart: Annual Returns Comparison + USD/ILS Trend -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
+        <div>
+          <h3 id="t1AnnualTitle" class="text-base font-bold text-slate-900">תשואות שנתיות: S&P 500 מול ת"א-125 ומגמת שער הדולר (USD/ILS)</h3>
+          <p class="text-xs text-slate-500">עמודות ירוקות: S&P 500 | עמודות כחולות: ת"א-125 | קו כתום מקווקו (ציר שמאל): שער הדולר בסוף כל שנה</p>
+        </div>
+        <div class="relative w-full h-72 sm:h-80">
+          <canvas id="t1AnnualChart"></canvas>
         </div>
       </div>
     </section>
 
     <!-- ===================================================================== -->
-    <!-- TAB 2: ROLLING HOLDING PERIODS                                        -->
+    <!-- TAB 2: ROLLING HOLDING PERIODS (1-33 YEARS)                           -->
     <!-- ===================================================================== -->
     <section id="tab2" class="tab-panel hidden space-y-6">
+
       <!-- Controls Card -->
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-5">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3.5">
           <div>
-            <h2 class="text-base font-bold text-slate-900">בדיקת כל החלונות המתגלגלים בהיסטוריה</h2>
-            <p class="text-xs text-slate-500">גלה מה קרה לכל משקיע שנכנס בכל שנה אפשרית והחזיק בדיוק N שנים (בניכוי אינפלציה)</p>
+            <h2 class="text-base font-bold text-slate-900">טווחי השקעה מתגלגלים: S&P 500 (בשקלים) מול ת"א-125 (1992–2025)</h2>
+            <p class="text-xs text-slate-500">בדיקת כל חלונות הזמן האפשריים של N שנים — באיזה טווח נעלם הסיכון להפסד ריאלי ומי ניצח יותר?</p>
           </div>
-          <!-- Mode Toggle -->
+          <!-- Real vs Nominal Toggle -->
           <div class="inline-flex bg-slate-100 p-1 rounded-xl self-start sm:self-auto">
-            <button id="t2ModeUsd" onclick="setTab2Mode('usd')" class="px-3.5 py-2 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition">ריאלי בדולר (1956–2025)</button>
-            <button id="t2ModeIls" onclick="setTab2Mode('ils')" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition">ריאלי בשקלים (1986–2025)</button>
+            <button id="t2RealBtn" onclick="setTab2Real(true)" class="px-3.5 py-2 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition">ריאלי בשקלים (בניכוי מדד ישראל)</button>
+            <button id="t2NomBtn" onclick="setTab2Real(false)" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition">נומינלי בשקלים</button>
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-          <!-- Holding Period Slider -->
-          <div class="space-y-2">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+          <!-- Horizon Slider -->
+          <div class="lg:col-span-7 space-y-2">
             <div class="flex items-center justify-between">
-              <label for="t2Horizon" class="text-sm font-bold text-slate-700">טווח השקעה (שנים)</label>
-              <span id="t2HorizonVal" class="px-2.5 py-0.5 rounded-lg bg-blue-50 text-blue-700 font-extrabold text-sm tabular-nums">20 שנה</span>
+              <label for="t2Horizon" class="text-sm font-bold text-slate-800">טווח ההשקעה (שנים)</label>
+              <span id="t2HorizonVal" class="px-3 py-1 rounded-lg bg-blue-50 text-blue-700 font-extrabold text-sm tabular-nums border border-blue-100">10 שנים</span>
             </div>
-            <input id="t2Horizon" type="range" min="1" max="35" value="20" oninput="renderTab2()" class="w-full" />
+            <input id="t2Horizon" type="range" min="1" max="33" value="10" oninput="renderTab2()" class="w-full" />
             <div class="flex justify-between text-[11px] text-slate-400 tabular-nums">
               <span>שנה 1</span>
               <span>10 שנים</span>
               <span>20 שנה</span>
-              <span>35 שנה</span>
+              <span>33 שנה</span>
             </div>
           </div>
 
-          <!-- Safe Investment Comparison Slider -->
-          <div class="space-y-2">
-            <div class="flex items-center justify-between">
-              <label for="t2SafeRate" class="text-sm font-bold text-slate-700">השקעה בטוחה להשוואה (נומינלי שנתי)</label>
-              <span id="t2SafeRateVal" class="px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-800 font-extrabold text-sm tabular-nums ltr-num">4.0%</span>
+          <!-- Head-to-Head Summary Pill -->
+          <div class="lg:col-span-5 bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2">
+            <div class="text-xs font-bold text-slate-600">ראש בראש באותן תקופות (1992–2025)</div>
+            <div class="flex items-center justify-between text-xs font-extrabold">
+              <span class="text-emerald-700">S&P 500 ניצח: <span id="t2SpBeatPct" class="tabular-nums">—</span></span>
+              <span class="text-blue-700">ת"א-125 ניצח: <span id="t2TaBeatPct" class="tabular-nums">—</span></span>
             </div>
-            <input id="t2SafeRate" type="range" min="0" max="10" step="0.25" value="4.0" oninput="renderTab2()" class="w-full" />
-            <div class="flex justify-between text-[11px] text-slate-400 tabular-nums ltr-num">
-              <span>0%</span>
-              <span>4%</span>
-              <span>7%</span>
-              <span>10%</span>
+            <div class="w-full h-3 rounded-full bg-slate-200 overflow-hidden flex">
+              <div id="t2HeadBarSp" class="bg-emerald-500 h-full transition-all" style="width: 50%"></div>
+              <div id="t2HeadBarTa" class="bg-blue-600 h-full transition-all" style="width: 50%"></div>
             </div>
-          </div>
-
-          <!-- Dividends Checkbox -->
-          <div class="flex items-center md:justify-end">
-            <label class="inline-flex items-center gap-2.5 cursor-pointer select-none bg-slate-50 px-4 py-3 rounded-xl border border-slate-200">
-              <input id="t2Dividends" type="checkbox" checked onchange="renderTab2()" class="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500" />
-              <span class="text-sm font-bold text-slate-700">כולל השקעה מחדש של דיבידנדים</span>
-            </label>
+            <div id="t2HeadCount" class="text-[11px] text-slate-500 tabular-nums">—</div>
           </div>
         </div>
       </div>
 
-      <!-- 5 KPI Cards -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-          <div class="text-xs font-bold text-slate-500">תקופות ברווח ריאלי</div>
-          <div id="t2KpiWinRate" class="text-2xl font-extrabold text-emerald-600 mt-1.5 tabular-nums">—</div>
-          <div id="t2KpiWinCount" class="text-xs text-slate-500 mt-1 tabular-nums">—</div>
+      <!-- Side-by-Side Statistical Comparison Cards -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <!-- S&P 500 Stats Card -->
+        <div class="bg-white rounded-2xl border-t-4 border-t-emerald-500 border-x border-b border-slate-200 p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+              S&P 500 בשקלים (1992–2025)
+            </h3>
+            <span id="t2SpPosBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 tabular-nums">—</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <div class="text-[11px] text-slate-500 font-semibold">תקופות ברווח</div>
+              <div id="t2SpWinRate" class="text-xl font-extrabold text-emerald-600 mt-1 tabular-nums">—</div>
+              <div id="t2SpWinCount" class="text-[11px] text-slate-500 mt-0.5 tabular-nums">—</div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <div class="text-[11px] text-slate-500 font-semibold">התרחיש הגרוע</div>
+              <div id="t2SpWorst" class="text-xl font-extrabold text-red-600 mt-1 tabular-nums">—</div>
+              <div id="t2SpWorstYrs" class="text-[11px] text-slate-500 mt-0.5 tabular-nums">—</div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <div class="text-[11px] text-slate-500 font-semibold">ממוצע שנתי</div>
+              <div id="t2SpAvg" class="text-xl font-extrabold text-slate-900 mt-1 tabular-nums">—</div>
+              <div id="t2SpAvgMult" class="text-[11px] text-slate-500 mt-0.5 tabular-nums">—</div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <div class="text-[11px] text-slate-500 font-semibold">התרחיש הטוב</div>
+              <div id="t2SpBest" class="text-xl font-extrabold text-emerald-600 mt-1 tabular-nums">—</div>
+              <div id="t2SpBestYrs" class="text-[11px] text-slate-500 mt-0.5 tabular-nums">—</div>
+            </div>
+          </div>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-          <div class="text-xs font-bold text-slate-500">התרחיש הגרוע ביותר</div>
-          <div id="t2KpiWorst" class="text-2xl font-extrabold text-red-600 mt-1.5 tabular-nums">—</div>
-          <div id="t2KpiWorstPeriod" class="text-xs text-slate-500 mt-1 tabular-nums">—</div>
-        </div>
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-          <div class="text-xs font-bold text-slate-500">הממוצע ההיסטורי</div>
-          <div id="t2KpiAvg" class="text-2xl font-extrabold text-blue-600 mt-1.5 tabular-nums">—</div>
-          <div id="t2KpiAvgMult" class="text-xs text-slate-500 mt-1 tabular-nums">—</div>
-        </div>
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-          <div class="text-xs font-bold text-slate-500">התרחיש הטוב ביותר</div>
-          <div id="t2KpiBest" class="text-2xl font-extrabold text-emerald-600 mt-1.5 tabular-nums">—</div>
-          <div id="t2KpiBestPeriod" class="text-xs text-slate-500 mt-1 tabular-nums">—</div>
-        </div>
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
-          <div class="text-xs font-bold text-slate-500">ניצחון על השקעה בטוחה</div>
-          <div id="t2KpiBeatSafe" class="text-2xl font-extrabold text-indigo-600 mt-1.5 tabular-nums">—</div>
-          <div id="t2KpiBeatSafeSub" class="text-xs text-slate-500 mt-1 tabular-nums">—</div>
+
+        <!-- TA-125 Stats Card -->
+        <div class="bg-white rounded-2xl border-t-4 border-t-blue-600 border-x border-b border-slate-200 p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+              ת"א-125 הבורסה הישראלית (1992–2025)
+            </h3>
+            <span id="t2TaPosBadge" class="text-xs font-bold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 tabular-nums">—</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <div class="text-[11px] text-slate-500 font-semibold">תקופות ברווח</div>
+              <div id="t2TaWinRate" class="text-xl font-extrabold text-blue-600 mt-1 tabular-nums">—</div>
+              <div id="t2TaWinCount" class="text-[11px] text-slate-500 mt-0.5 tabular-nums">—</div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <div class="text-[11px] text-slate-500 font-semibold">התרחיש הגרוע</div>
+              <div id="t2TaWorst" class="text-xl font-extrabold text-red-600 mt-1 tabular-nums">—</div>
+              <div id="t2TaWorstYrs" class="text-[11px] text-slate-500 mt-0.5 tabular-nums">—</div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <div class="text-[11px] text-slate-500 font-semibold">ממוצע שנתי</div>
+              <div id="t2TaAvg" class="text-xl font-extrabold text-slate-900 mt-1 tabular-nums">—</div>
+              <div id="t2TaAvgMult" class="text-[11px] text-slate-500 mt-0.5 tabular-nums">—</div>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+              <div class="text-[11px] text-slate-500 font-semibold">התרחיש הטוב</div>
+              <div id="t2TaBest" class="text-xl font-extrabold text-blue-600 mt-1 tabular-nums">—</div>
+              <div id="t2TaBestYrs" class="text-[11px] text-slate-500 mt-0.5 tabular-nums">—</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Rolling Windows Bar Chart -->
+      <!-- 70-Year S&P 500 Historical Reference Strip (1956–2025) -->
+      <div class="bg-emerald-50/70 rounded-2xl border border-emerald-200 px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm text-emerald-950">
+        <div class="font-bold flex items-center gap-2">
+          <span>🌎 פרספקטיבת 70 שנה של S&P 500 (1956–2025, דולר ריאלי, לטווח של <span id="t2Ref70Horizon">10</span> שנים):</span>
+        </div>
+        <div id="t2Ref70Stats" class="font-semibold tabular-nums text-emerald-800">—</div>
+      </div>
+
+      <!-- Rolling Windows Chart -->
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
         <div>
-          <h3 id="t2ChartTitle" class="text-base font-bold text-slate-900">תשואה שנתית ריאלית (CAGR) לכל חלון השקעה</h3>
-          <p class="text-xs text-slate-500">ירוק = רווח ריאלי מעל 0% | אדום = הפסד ריאלי מתחת ל-0%. רחף או לחץ על עמודה לפרטי התקופה המלאים.</p>
+          <h3 id="t2ChartTitle" class="text-base font-bold text-slate-900">תשואה שנתית ממוצעת (CAGR) בכל חלון השקעה: S&P 500 מול ת"א-125</h3>
+          <p class="text-xs text-slate-500">השוואה ישירה של כל תקופת אחזקה של N שנים החל מ-1992 • קו ה-0% מודגש להבחנה מיידית בין רווח להפסד</p>
         </div>
         <div class="relative w-full h-80 sm:h-96">
           <canvas id="t2Chart"></canvas>
@@ -383,20 +485,20 @@
     </section>
 
     <!-- ===================================================================== -->
-    <!-- TAB 3: FUTURE SIMULATOR (FX, INFLATION, HEDGING & TAX)                -->
+    <!-- TAB 3: FUTURE SIMULATOR (WITH TA-125, MIXED PORTFOLIO & HEDGING)      -->
     <!-- ===================================================================== -->
     <section id="tab3" class="tab-panel hidden space-y-6">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-        <!-- Left Column: Sliders Panel (5 cols on lg) -->
+        <!-- Left Column: Sliders & Settings (5 cols) -->
         <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
           <div class="border-b border-slate-100 pb-3">
             <h2 class="text-base font-bold text-slate-900">פרמטרים לסימולציה עתידית</h2>
-            <p class="text-xs text-slate-500">השווה בזמן אמת בין S&P 500 חשוף לדולר, מגודר מט"ח, והשקעה סולידית</p>
+            <p class="text-xs text-slate-500">השוו בין 5 מסלולי השקעה שונים בהתחשב בשער הדולר, אינפלציה, גידור ומס</p>
           </div>
 
-          <div class="space-y-4">
-            <!-- Initial Investment -->
+          <div class="space-y-3.5">
+            <!-- Initial -->
             <div>
               <div class="flex justify-between text-xs font-bold mb-1">
                 <span class="text-slate-700">השקעה ראשונית</span>
@@ -405,181 +507,216 @@
               <input id="t3Init" type="range" min="10000" max="2000000" step="10000" value="100000" oninput="renderTab3()" class="w-full" />
             </div>
 
-            <!-- Monthly Deposit -->
+            <!-- Monthly -->
             <div>
               <div class="flex justify-between text-xs font-bold mb-1">
                 <span class="text-slate-700">הפקדה חודשית</span>
                 <span id="t3MonthlyVal" class="text-blue-700 tabular-nums">₪2,000</span>
               </div>
-              <input id="t3Monthly" type="range" min="0" max="20000" step="500" value="2000" oninput="renderTab3()" class="w-full" />
+              <input id="t3Monthly" type="range" min="0" max="20000" step="250" value="2000" oninput="renderTab3()" class="w-full" />
             </div>
 
             <!-- Horizon -->
             <div>
               <div class="flex justify-between text-xs font-bold mb-1">
                 <span class="text-slate-700">טווח השקעה</span>
-                <span id="t3YearsVal" class="text-blue-700 tabular-nums">20 שנה</span>
+                <span id="t3YearsVal" class="text-blue-700 tabular-nums">20 שנים</span>
               </div>
               <input id="t3Years" type="range" min="1" max="40" step="1" value="20" oninput="renderTab3()" class="w-full" />
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1 border-t border-slate-100">
-              <!-- S&P Nominal Return -->
+            <!-- Expected Returns Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2 border-t border-slate-100">
               <div>
                 <div class="flex justify-between text-xs font-bold mb-1">
-                  <span class="text-slate-700">תשואת S&P 500 (שנתי)</span>
-                  <span id="t3SpReturnVal" class="text-emerald-700 tabular-nums ltr-num">9.5%</span>
+                  <span class="text-slate-700">תשואת S&P 500 צפויה</span>
+                  <span id="t3SpRetVal" class="text-emerald-700 tabular-nums ltr-num">9.5%</span>
                 </div>
-                <input id="t3SpReturn" type="range" min="2" max="15" step="0.5" value="9.5" oninput="renderTab3()" class="w-full" />
+                <input id="t3SpRet" type="range" min="2" max="15" step="0.5" value="9.5" oninput="renderTab3()" class="w-full slider-emerald" />
               </div>
 
-              <!-- Inflation -->
               <div>
                 <div class="flex justify-between text-xs font-bold mb-1">
-                  <span class="text-slate-700">אינפלציה שנתית ממוצעת</span>
-                  <span id="t3InflationVal" class="text-red-600 tabular-nums ltr-num">2.5%</span>
+                  <span class="text-slate-700">תשואת ת"א-125 צפויה</span>
+                  <span id="t3TaRetVal" class="text-blue-700 tabular-nums ltr-num">8.5%</span>
                 </div>
-                <input id="t3Inflation" type="range" min="0" max="8" step="0.25" value="2.5" oninput="renderTab3()" class="w-full" />
+                <input id="t3TaRet" type="range" min="2" max="15" step="0.5" value="8.5" oninput="renderTab3()" class="w-full" />
               </div>
 
-              <!-- FX Entry -->
               <div>
                 <div class="flex justify-between text-xs font-bold mb-1">
-                  <span class="text-slate-700">שער דולר בכניסה</span>
-                  <span id="t3FxStartVal" class="text-slate-800 tabular-nums ltr-num">₪3.70</span>
+                  <span class="text-slate-700">אינפלציה בישראל (שנתי)</span>
+                  <span id="t3InfVal" class="text-red-600 tabular-nums ltr-num">2.5%</span>
                 </div>
-                <input id="t3FxStart" type="range" min="2.50" max="5.00" step="0.05" value="3.70" oninput="renderTab3()" class="w-full" />
+                <input id="t3Inf" type="range" min="0" max="8" step="0.25" value="2.5" oninput="renderTab3()" class="w-full" />
               </div>
 
-              <!-- FX Exit -->
               <div>
                 <div class="flex justify-between text-xs font-bold mb-1">
-                  <span class="text-slate-700">שער דולר ביציאה</span>
-                  <span id="t3FxEndVal" class="text-slate-800 tabular-nums ltr-num">₪3.70</span>
+                  <span class="text-slate-700">השקעה בטוחה (שנתי)</span>
+                  <span id="t3SafeRetVal" class="text-slate-700 tabular-nums ltr-num">4.0%</span>
                 </div>
-                <input id="t3FxEnd" type="range" min="2.50" max="5.50" step="0.05" value="3.70" oninput="renderTab3()" class="w-full" />
+                <input id="t3SafeRet" type="range" min="0" max="8" step="0.25" value="4.0" oninput="renderTab3()" class="w-full" />
               </div>
 
-              <!-- Hedging Cost -->
               <div>
                 <div class="flex justify-between text-xs font-bold mb-1">
-                  <span class="text-slate-700">עלות גידור מט"ח (שנתי)</span>
-                  <span id="t3HedgeCostVal" class="text-amber-700 tabular-nums ltr-num">0.8%</span>
+                  <span class="text-slate-700">שער דולר נוכחי</span>
+                  <span id="t3FxStartVal" class="text-slate-800 tabular-nums ltr-num">₪3.60</span>
                 </div>
-                <input id="t3HedgeCost" type="range" min="0" max="3" step="0.1" value="0.8" oninput="renderTab3()" class="w-full" />
+                <input id="t3FxStart" type="range" min="2.50" max="5.00" step="0.05" value="3.60" oninput="renderTab3()" class="w-full slider-amber" />
               </div>
 
-              <!-- Safe Return -->
               <div>
                 <div class="flex justify-between text-xs font-bold mb-1">
-                  <span class="text-slate-700">תשואת השקעה בטוחה</span>
-                  <span id="t3SafeReturnVal" class="text-slate-700 tabular-nums ltr-num">4.0%</span>
+                  <span class="text-slate-700">שער דולר יעד ביציאה</span>
+                  <span id="t3FxEndVal" class="text-amber-700 tabular-nums ltr-num">₪3.60</span>
                 </div>
-                <input id="t3SafeReturn" type="range" min="0" max="8" step="0.25" value="4.0" oninput="renderTab3()" class="w-full" />
+                <input id="t3FxEnd" type="range" min="2.50" max="5.50" step="0.05" value="3.60" oninput="renderTab3()" class="w-full slider-amber" />
               </div>
             </div>
 
-            <!-- Checkboxes -->
-            <div class="pt-3 border-t border-slate-100 space-y-2">
+            <!-- Hedging Cost & Portfolio Mix -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2 border-t border-slate-100">
+              <div>
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span class="text-slate-700">עלות גידור מט"ח (שנתי)</span>
+                  <span id="t3HedgeVal" class="text-amber-700 tabular-nums ltr-num">1.0%</span>
+                </div>
+                <input id="t3Hedge" type="range" min="0" max="3" step="0.1" value="1.0" oninput="renderTab3()" class="w-full slider-amber" />
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span class="text-slate-700">תמהיל תיק משולב</span>
+                  <span id="t3MixVal" class="text-purple-700 tabular-nums">70% S&P / 30% ת"א</span>
+                </div>
+                <input id="t3Mix" type="range" min="10" max="90" step="5" value="70" oninput="renderTab3()" class="w-full slider-purple" />
+              </div>
+            </div>
+
+            <!-- Display Mode & Tax Toggles -->
+            <div class="pt-3 border-t border-slate-100 space-y-2.5">
+              <div class="grid grid-cols-2 bg-slate-100 p-1 rounded-xl">
+                <button id="t3RealBtn" onclick="setTab3Real(true)" class="py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition">כוח קנייה ריאלי (שקלים של היום)</button>
+                <button id="t3NomBtn" onclick="setTab3Real(false)" class="py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition">שווי נומינלי (עתידי)</button>
+              </div>
               <label class="flex items-center gap-2 cursor-pointer select-none">
                 <input id="t3Tax" type="checkbox" checked onchange="renderTab3()" class="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500" />
-                <span class="text-xs sm:text-sm font-medium text-slate-700">ניכוי מס רווחי הון 25% ריאלי בסוף התקופה</span>
-              </label>
-              <label class="flex items-center gap-2 cursor-pointer select-none">
-                <input id="t3Fee" type="checkbox" checked onchange="renderTab3()" class="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500" />
-                <span class="text-xs sm:text-sm font-medium text-slate-700">דמי ניהול 0.1% שנתי (בקרנות S&P 500)</span>
+                <span class="text-xs sm:text-sm font-semibold text-slate-700">ניכוי מס רווחי הון 25% ריאלי ביציאה</span>
               </label>
             </div>
           </div>
         </div>
 
-        <!-- Right Column: Comparison Cards, Chart & Breakdown (7 cols on lg) -->
+        <!-- Right Column: 5 Comparison Cards, Chart & Breakdown (7 cols) -->
         <div class="lg:col-span-7 space-y-5">
-          <!-- 3 Strategy Comparison Cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <!-- Unhedged -->
-            <div id="t3CardUnhedged" class="bg-white rounded-2xl border-2 border-emerald-500 p-4 shadow-sm relative">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-bold text-emerald-700">S&P 500 חשוף לדולר</span>
-                <span id="t3BadgeUnhedged" class="hidden text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">מוביל</span>
+
+          <!-- 5 Track Comparison Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3.5">
+            <!-- 1. S&P 500 Unhedged -->
+            <div id="t3CardSpUn" class="bg-white rounded-2xl border-2 border-emerald-500 p-4 shadow-sm">
+              <div class="flex items-center justify-between gap-1 mb-1">
+                <span class="text-xs font-extrabold text-emerald-700">S&P 500 חשוף לדולר</span>
+                <span id="t3BadgeSpUn" class="hidden text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">מוביל</span>
               </div>
-              <div id="t3ValUnhedged" class="text-2xl font-extrabold text-slate-900 tabular-nums">—</div>
-              <div class="text-[11px] text-slate-500 mt-1">כוח קנייה נטו (בשקלים של היום)</div>
-              <div id="t3SubUnhedged" class="text-xs font-semibold text-emerald-700 mt-1.5 tabular-nums">—</div>
+              <div id="t3ValSpUn" class="text-xl sm:text-2xl font-extrabold text-slate-900 tabular-nums">—</div>
+              <div id="t3SubSpUn" class="text-xs font-semibold text-emerald-700 mt-1 tabular-nums">—</div>
             </div>
 
-            <!-- Hedged -->
-            <div id="t3CardHedged" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm relative">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-bold text-blue-700">S&P 500 מגודר מט"ח</span>
-                <span id="t3BadgeHedged" class="hidden text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">מוביל</span>
+            <!-- 2. S&P 500 Hedged -->
+            <div id="t3CardSpHed" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+              <div class="flex items-center justify-between gap-1 mb-1">
+                <span class="text-xs font-extrabold text-amber-700">S&P 500 מגודר מט"ח</span>
+                <span id="t3BadgeSpHed" class="hidden text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">מוביל</span>
               </div>
-              <div id="t3ValHedged" class="text-2xl font-extrabold text-slate-900 tabular-nums">—</div>
-              <div class="text-[11px] text-slate-500 mt-1">כוח קנייה נטו (בשקלים של היום)</div>
-              <div id="t3SubHedged" class="text-xs font-semibold text-blue-700 mt-1.5 tabular-nums">—</div>
+              <div id="t3ValSpHed" class="text-xl sm:text-2xl font-extrabold text-slate-900 tabular-nums">—</div>
+              <div id="t3SubSpHed" class="text-xs font-semibold text-amber-700 mt-1 tabular-nums">—</div>
             </div>
 
-            <!-- Safe -->
-            <div id="t3CardSafe" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm relative">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-xs font-bold text-slate-600">השקעה בטוחה / פיקדון</span>
+            <!-- 3. TA-125 -->
+            <div id="t3CardTa" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+              <div class="flex items-center justify-between gap-1 mb-1">
+                <span class="text-xs font-extrabold text-blue-700">ת"א-125 (ישראל)</span>
+                <span id="t3BadgeTa" class="hidden text-[10px] font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">מוביל</span>
+              </div>
+              <div id="t3ValTa" class="text-xl sm:text-2xl font-extrabold text-slate-900 tabular-nums">—</div>
+              <div id="t3SubTa" class="text-xs font-semibold text-blue-700 mt-1 tabular-nums">—</div>
+            </div>
+
+            <!-- 4. Mixed Portfolio -->
+            <div id="t3CardMix" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm sm:col-span-1 xl:col-span-2">
+              <div class="flex items-center justify-between gap-1 mb-1">
+                <span id="t3MixCardTitle" class="text-xs font-extrabold text-purple-700">תיק משולב (70% S&P + 30% ת"א-125)</span>
+                <span id="t3BadgeMix" class="hidden text-[10px] font-bold bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">מוביל</span>
+              </div>
+              <div class="flex items-baseline justify-between flex-wrap gap-2">
+                <div id="t3ValMix" class="text-xl sm:text-2xl font-extrabold text-slate-900 tabular-nums">—</div>
+                <div id="t3SubMix" class="text-xs font-semibold text-purple-700 tabular-nums">—</div>
+              </div>
+            </div>
+
+            <!-- 5. Safe Bond -->
+            <div id="t3CardSafe" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+              <div class="flex items-center justify-between gap-1 mb-1">
+                <span class="text-xs font-extrabold text-slate-600">השקעה בטוחה</span>
                 <span id="t3BadgeSafe" class="hidden text-[10px] font-bold bg-slate-200 text-slate-800 px-2 py-0.5 rounded-full">מוביל</span>
               </div>
-              <div id="t3ValSafe" class="text-2xl font-extrabold text-slate-900 tabular-nums">—</div>
-              <div class="text-[11px] text-slate-500 mt-1">כוח קנייה נטו (בשקלים של היום)</div>
-              <div id="t3SubSafe" class="text-xs font-semibold text-slate-600 mt-1.5 tabular-nums">—</div>
+              <div id="t3ValSafe" class="text-xl sm:text-2xl font-extrabold text-slate-900 tabular-nums">—</div>
+              <div id="t3SubSafe" class="text-xs font-semibold text-slate-600 mt-1 tabular-nums">—</div>
             </div>
           </div>
 
-          <!-- Growth Line Chart -->
+          <!-- Future Growth Trajectory Chart -->
           <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3">
             <div>
-              <h3 class="text-base font-bold text-slate-900">צמיחת כוח הקנייה הריאלי לאורך השנים (נטו בשקלים של היום)</h3>
-              <p class="text-xs text-slate-500">השוואה שנתית של שווי התיק הריאלי לאחר ניכוי אינפלציה ומס רווחי הון בכל נקודת זמן</p>
+              <h3 id="t3ChartTitle" class="text-base font-bold text-slate-900">תחזית צמיחת התיק לאורך השנים (כוח קנייה ריאלי נטו)</h3>
+              <p class="text-xs text-slate-500">השוואה שנתית של כל 5 המסלולים מול סך הקרן שהופקדה</p>
             </div>
             <div class="relative w-full h-72 sm:h-80">
               <canvas id="t3Chart"></canvas>
             </div>
           </div>
 
-          <!-- Visual Breakdown Summary (Unhedged S&P 500) -->
+          <!-- Visual Breakdown Bar (Gross Return vs FX vs Inflation vs Tax) -->
           <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-              <h3 class="text-sm font-bold text-slate-900">פירוק השפעות — S&P 500 חשוף לדולר</h3>
-              <span id="t3FxDeltaBadge" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 tabular-nums">—</span>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <h3 class="text-sm font-bold text-slate-900">פירוק השפעות (מסלול S&P 500 חשוף לדולר)</h3>
+              <span id="t3FxSummaryBadge" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 tabular-nums">—</span>
             </div>
 
-            <!-- Visual stacked proportion bar -->
-            <div class="w-full h-4 rounded-full bg-slate-100 overflow-hidden flex" id="t3BreakdownBar"></div>
+            <!-- Stacked Bar -->
+            <div id="t3StackedBar" class="w-full h-4 rounded-full bg-slate-100 overflow-hidden flex"></div>
 
-            <!-- Exact Numeric Breakdown Grid -->
+            <!-- 6 Numeric Breakdown Cells -->
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 text-center">
               <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-200">
-                <div class="text-[11px] text-slate-500 font-medium">סך הפקדות</div>
-                <div id="t3BrkDeposits" class="text-sm font-extrabold text-slate-800 mt-0.5 tabular-nums">—</div>
+                <div class="text-[11px] text-slate-500 font-semibold">סך הפקדות</div>
+                <div id="t3BrkDep" class="text-xs sm:text-sm font-extrabold text-slate-800 mt-0.5 tabular-nums">—</div>
               </div>
               <div class="bg-emerald-50 rounded-xl p-2.5 border border-emerald-200">
-                <div class="text-[11px] text-emerald-700 font-medium">רווח שוק ההון</div>
-                <div id="t3BrkMarket" class="text-sm font-extrabold text-emerald-700 mt-0.5 tabular-nums">—</div>
+                <div class="text-[11px] text-emerald-700 font-semibold">רווח שוק ברוטו</div>
+                <div id="t3BrkMarket" class="text-xs sm:text-sm font-extrabold text-emerald-700 mt-0.5 tabular-nums">—</div>
               </div>
-              <div id="t3BrkFxBox" class="bg-blue-50 rounded-xl p-2.5 border border-blue-200">
-                <div class="text-[11px] text-blue-700 font-medium">השפעת הדולר</div>
-                <div id="t3BrkFx" class="text-sm font-extrabold text-blue-700 mt-0.5 tabular-nums">—</div>
+              <div id="t3BrkFxCard" class="bg-blue-50 rounded-xl p-2.5 border border-blue-200">
+                <div class="text-[11px] text-blue-700 font-semibold">השפעת הדולר</div>
+                <div id="t3BrkFx" class="text-xs sm:text-sm font-extrabold text-blue-700 mt-0.5 tabular-nums">—</div>
               </div>
               <div class="bg-amber-50 rounded-xl p-2.5 border border-amber-200">
-                <div class="text-[11px] text-amber-800 font-medium">מס רווחי הון</div>
-                <div id="t3BrkTax" class="text-sm font-extrabold text-amber-800 mt-0.5 tabular-nums">—</div>
+                <div class="text-[11px] text-amber-800 font-semibold">מס רווחי הון</div>
+                <div id="t3BrkTax" class="text-xs sm:text-sm font-extrabold text-amber-800 mt-0.5 tabular-nums">—</div>
               </div>
               <div class="bg-red-50 rounded-xl p-2.5 border border-red-200">
-                <div class="text-[11px] text-red-700 font-medium">שחיקת אינפלציה</div>
-                <div id="t3BrkInf" class="text-sm font-extrabold text-red-700 mt-0.5 tabular-nums">—</div>
+                <div class="text-[11px] text-red-700 font-semibold">שחיקת אינפלציה</div>
+                <div id="t3BrkInf" class="text-xs sm:text-sm font-extrabold text-red-700 mt-0.5 tabular-nums">—</div>
               </div>
               <div class="bg-slate-900 rounded-xl p-2.5 text-white">
-                <div class="text-[11px] text-slate-300 font-medium">נטו ריאלי ביד</div>
-                <div id="t3BrkNetReal" class="text-sm font-extrabold text-white mt-0.5 tabular-nums">—</div>
+                <div class="text-[11px] text-slate-300 font-semibold">נטו ריאלי ביד</div>
+                <div id="t3BrkNet" class="text-xs sm:text-sm font-extrabold text-white mt-0.5 tabular-nums">—</div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
@@ -588,31 +725,26 @@
 
   <!-- Footer & Disclaimer -->
   <footer class="bg-white border-t border-slate-200 mt-10">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 text-center space-y-1">
-      <p class="text-xs text-slate-500">
-        <strong>הבהרה משפטית:</strong> כלי זה מיועד למטרות לימוד, העשרה וסימולציה בלבד ואינו מהווה ייעוץ השקעות, ייעוץ מס או תחליף לייעוץ מקצועי המותאם לצרכיו של כל אדם. תשואות עבר אינן מעידות על תשואות עתידיות.
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 text-center space-y-1.5">
+      <p class="text-xs text-slate-600">
+        <strong>הבהרה משפטית:</strong> הנתונים ההיסטוריים המוצגים באפליקציה הם הערכות תשואה כוללת מקורבות למטרות לימוד, המחשה והעשרה בלבד, ואינם מהווים ייעוץ השקעות, שיווק השקעות או ייעוץ מס. תשואות עבר אינן מבטיחות תשואות עתידיות.
       </p>
       <p class="text-[11px] text-slate-400">
-        נתוני S&P 500 ואינפלציה בארה"ב (1956–2025) מבוססים על סדרות היסטוריות שנתיות; נתוני אינפלציה בישראל ושער דולר/שקל (1986–2025) מבוססים על נתוני הלמ"ס ובנק ישראל.
+        מקורות משוערים: סדרות תשואה כוללת שנתיות של S&P 500 ומדד המחירים בארה"ב (1956–2025), מדד ת"א-125 (לשעבר ת"א-100, 1992–2025), מדד המחירים לצרכן בישראל (הלמ"ס) ושערי דולר/שקל יציגים (בנק ישראל).
       </p>
     </div>
   </footer>
 
   <!-- ======================================================================= -->
-  <!-- APPLICATION LOGIC & HISTORICAL DATASETS                                 -->
+  <!-- EMBEDDED DATA & APPLICATION LOGIC                                       -->
   <!-- ======================================================================= -->
   <script>
     /*************************************************************************
-     * 1. EMBEDDED HISTORICAL DATASETS (1956 - 2025)
-     *    - sp500Total: S&P 500 Annual Total Return (%) with dividends
-     *    - sp500Price: S&P 500 Annual Price Return (%) without dividends
-     *    - usCpi:      US Annual CPI Inflation (%)
-     *    - ilCpi:      Israeli Annual CPI Inflation (%) from 1986 to 2025
-     *    - usdIls:     Year-end USD/ILS exchange rate from 1985 to 2025
+     * 1. EMBEDDED HISTORICAL DATASETS (1956–2025)
      *************************************************************************/
-    const HISTORICAL_DATA = {
-      // S&P 500 Annual Total Return (%) 1956-2025
-      sp500Total: {
+    const DATA = {
+      // S&P 500 Annual Total Returns (%) including dividends (1956–2025)
+      sp500: {
         1956: 6.56, 1957: -10.78, 1958: 43.36, 1959: 11.96, 1960: 0.47,
         1961: 26.89, 1962: -8.73, 1963: 22.80, 1964: 16.48, 1965: 12.45,
         1966: -10.06, 1967: 23.98, 1968: 11.06, 1969: -8.50, 1970: 4.01,
@@ -628,24 +760,19 @@
         2016: 11.96, 2017: 21.83, 2018: -4.38, 2019: 31.49, 2020: 18.40,
         2021: 28.71, 2022: -18.11, 2023: 26.29, 2024: 25.02, 2025: 17.88
       },
-      // S&P 500 Annual Price Return (%) 1956-2025
-      sp500Price: {
-        1956: 2.62, 1957: -14.31, 1958: 38.06, 1959: 8.48, 1960: -2.97,
-        1961: 23.13, 1962: -11.81, 1963: 18.89, 1964: 12.97, 1965: 9.06,
-        1966: -13.09, 1967: 20.09, 1968: 7.66, 1969: -11.36, 1970: 0.10,
-        1971: 10.79, 1972: 15.63, 1973: -17.37, 1974: -29.72, 1975: 31.55,
-        1976: 19.15, 1977: -11.50, 1978: 1.06, 1979: 12.31, 1980: 25.77,
-        1981: -9.73, 1982: 14.76, 1983: 17.27, 1984: 1.40, 1985: 26.33,
-        1986: 14.62, 1987: 2.03, 1988: 12.40, 1989: 27.25, 1990: -6.56,
-        1991: 26.31, 1992: 4.46, 1993: 7.06, 1994: -1.54, 1995: 34.11,
-        1996: 20.26, 1997: 31.01, 1998: 26.67, 1999: 19.53, 2000: -10.14,
-        2001: -13.04, 2002: -23.37, 2003: 26.38, 2004: 8.99, 2005: 3.00,
-        2006: 13.62, 2007: 3.53, 2008: -38.49, 2009: 23.45, 2010: 12.78,
-        2011: 0.00, 2012: 13.41, 2013: 29.60, 2014: 11.39, 2015: -0.73,
-        2016: 9.54, 2017: 19.42, 2018: -6.24, 2019: 28.88, 2020: 16.26,
-        2021: 26.89, 2022: -19.44, 2023: 24.23, 2024: 23.31, 2025: 16.39
+
+      // Tel Aviv 125 (formerly TA-100) Annual Total Returns in ILS (%) (1992–2025)
+      ta125: {
+        1992: 94.0, 1993: 41.0, 1994: -39.0, 1995: 14.0, 1996: -1.0,
+        1997: 35.0, 1998: 3.0, 1999: 64.0, 2000: 0.5, 2001: -7.0,
+        2002: -20.0, 2003: 61.0, 2004: 19.0, 2005: 29.0, 2006: 12.0,
+        2007: 25.0, 2008: -51.0, 2009: 89.0, 2010: 15.0, 2011: -20.0,
+        2012: 7.0, 2013: 15.0, 2014: 6.7, 2015: 2.0, 2016: -2.5,
+        2017: 6.4, 2018: -2.3, 2019: 21.3, 2020: -3.0, 2021: 31.1,
+        2022: -11.8, 2023: 4.1, 2024: 28.6, 2025: 30.0
       },
-      // US Annual CPI Inflation (%) 1956-2025
+
+      // US Annual CPI Inflation (%) (1956–2025)
       usCpi: {
         1956: 2.86, 1957: 3.02, 1958: 1.76, 1959: 1.50, 1960: 1.48,
         1961: 0.67, 1962: 1.22, 1963: 1.65, 1964: 1.19, 1965: 1.92,
@@ -662,7 +789,8 @@
         2016: 2.07, 2017: 2.11, 2018: 1.91, 2019: 2.29, 2020: 1.36,
         2021: 7.04, 2022: 6.45, 2023: 3.35, 2024: 2.89, 2025: 2.70
       },
-      // Israeli Annual CPI Inflation (%) 1986-2025 (post-1985 stabilization plan)
+
+      // Israeli Annual CPI Inflation (%) (1986–2025)
       ilCpi: {
         1986: 19.65, 1987: 16.12, 1988: 16.43, 1989: 20.69, 1990: 17.61,
         1991: 18.02, 1992: 9.37, 1993: 11.24, 1994: 14.45, 1995: 8.10,
@@ -673,100 +801,127 @@
         2016: -0.20, 2017: 0.40, 2018: 0.80, 2019: 0.60, 2020: -0.70,
         2021: 2.80, 2022: 5.30, 2023: 3.00, 2024: 3.20, 2025: 2.80
       },
-      // Year-end USD/ILS Exchange Rate (1985 baseline through 2025)
+
+      // USD/ILS Year-End Closing Exchange Rate (1985–2025)
       usdIls: {
         1985: 1.50, 1986: 1.49, 1987: 1.54, 1988: 1.69, 1989: 1.96,
-        1990: 2.05, 1991: 2.28, 1992: 2.76, 1993: 2.99, 1994: 3.02,
-        1995: 3.14, 1996: 3.25, 1997: 3.54, 1998: 4.16, 1999: 4.15,
+        1990: 2.05, 1991: 2.28, 1992: 2.76, 1993: 2.98, 1994: 3.02,
+        1995: 3.13, 1996: 3.25, 1997: 3.54, 1998: 4.16, 1999: 4.15,
         2000: 4.04, 2001: 4.42, 2002: 4.74, 2003: 4.38, 2004: 4.31,
-        2005: 4.60, 2006: 4.23, 2007: 3.85, 2008: 3.80, 2009: 3.78,
+        2005: 4.60, 2006: 4.22, 2007: 3.85, 2008: 3.80, 2009: 3.77,
         2010: 3.55, 2011: 3.82, 2012: 3.73, 2013: 3.47, 2014: 3.89,
         2015: 3.90, 2016: 3.85, 2017: 3.47, 2018: 3.75, 2019: 3.46,
-        2020: 3.22, 2021: 3.11, 2022: 3.52, 2023: 3.63, 2024: 3.65,
+        2020: 3.21, 2021: 3.11, 2022: 3.52, 2023: 3.63, 2024: 3.65,
         2025: 3.60
+      },
+
+      // Approximate US 3-Month T-Bill / Short-Term Safe Return (%) (1956–2025)
+      safeUs: {
+        1956: 2.66, 1957: 3.26, 1958: 1.84, 1959: 3.41, 1960: 2.93,
+        1961: 2.38, 1962: 2.78, 1963: 3.16, 1964: 3.55, 1965: 3.95,
+        1966: 4.88, 1967: 4.32, 1968: 5.34, 1969: 6.68, 1970: 6.46,
+        1971: 4.35, 1972: 4.07, 1973: 7.04, 1974: 7.89, 1975: 5.84,
+        1976: 4.99, 1977: 5.27, 1978: 7.22, 1979: 10.04, 1980: 11.51,
+        1981: 14.03, 1982: 10.69, 1983: 8.63, 1984: 9.58, 1985: 7.48,
+        1986: 5.98, 1987: 5.82, 1988: 6.69, 1989: 8.12, 1990: 7.51,
+        1991: 5.42, 1992: 3.45, 1993: 3.02, 1994: 4.29, 1995: 5.51,
+        1996: 5.02, 1997: 5.07, 1998: 4.81, 1999: 4.66, 2000: 5.85,
+        2001: 3.45, 2002: 1.62, 2003: 1.02, 2004: 1.38, 2005: 3.16,
+        2006: 4.73, 2007: 4.41, 2008: 1.48, 2009: 0.16, 2010: 0.14,
+        2011: 0.06, 2012: 0.09, 2013: 0.06, 2014: 0.03, 2015: 0.05,
+        2016: 0.32, 2017: 0.93, 2018: 1.94, 2019: 2.06, 2020: 0.37,
+        2021: 0.05, 2022: 2.02, 2023: 5.07, 2024: 5.10, 2025: 4.25
+      },
+
+      // Approximate Israeli Short-Term Makam / BOI Safe Return (%) (1986–2025)
+      safeIl: {
+        1986: 22.0, 1987: 18.0, 1988: 15.0, 1989: 14.5, 1990: 14.0,
+        1991: 14.5, 1992: 11.8, 1993: 10.5, 1994: 13.5, 1995: 14.8,
+        1996: 15.5, 1997: 13.8, 1998: 11.8, 1999: 12.1, 2000: 9.3,
+        2001: 6.8, 2002: 7.4, 2003: 7.5, 2004: 4.3, 2005: 3.7,
+        2006: 5.1, 2007: 3.9, 2008: 3.7, 2009: 0.9, 2010: 1.7,
+        2011: 2.9, 2012: 2.3, 2013: 1.4, 2014: 0.6, 2015: 0.1,
+        2016: 0.1, 2017: 0.1, 2018: 0.15, 2019: 0.25, 2020: 0.1,
+        2021: 0.1, 2022: 1.6, 2023: 4.5, 2024: 4.5, 2025: 4.3
       }
     };
 
     /*************************************************************************
      * 2. GLOBAL STATE & CHART INSTANCES
      *************************************************************************/
-    let tab1ChartInstance = null;
-    let tab2ChartInstance = null;
-    let tab3ChartInstance = null;
-    let tab1ChartType = 'line'; // 'line' | 'bar'
-    let tab2Mode = 'usd';       // 'usd' | 'ils'
+    let state = {
+      t1Real: true,
+      t1Currency: 'ils', // 'ils' | 'usd'
+      t2Real: true,
+      t3Real: true,
+      lastCsvRows: []
+    };
+
+    let t1GrowthChart = null;
+    let t1AnnualChart = null;
+    let t2Chart = null;
+    let t3Chart = null;
     let toastTimer = null;
 
-    // Configure Chart.js defaults for crisp Hebrew typography
-    Chart.defaults.font.family = "'Heebo', 'Inter', sans-serif";
+    Chart.defaults.font.family = "'Heebo', 'Assistant', 'Inter', sans-serif";
     Chart.defaults.color = '#475569';
 
     /*************************************************************************
-     * 3. FORMATTING & UTILITY HELPERS
+     * 3. FORMATTING & MATH UTILITIES
      *************************************************************************/
-    function formatCurrency(val, sym = '₪') {
+    function fmtCurr(val, sym = '₪') {
       const sign = val < 0 ? '-' : '';
-      const absVal = Math.round(Math.abs(val)).toLocaleString('he-IL');
-      return `<span class="ltr-num">${sign}${sym}${absVal}</span>`;
+      return `<span class="ltr-num">${sign}${sym}${Math.round(Math.abs(val)).toLocaleString('he-IL')}</span>`;
     }
 
-    function formatCurrencyPlain(val, sym = '₪') {
+    function fmtCurrPlain(val, sym = '₪') {
       const sign = val < 0 ? '-' : '';
       return `${sign}${sym}${Math.round(Math.abs(val)).toLocaleString('he-IL')}`;
     }
 
-    function formatPct(val, decimals = 1, showPlus = true) {
-      const sign = val > 0 && showPlus ? '+' : (val < 0 ? '-' : '');
-      return `<span class="ltr-num">${sign}${Math.abs(val).toFixed(decimals)}%</span>`;
+    function fmtPct(val, dec = 1, plus = true) {
+      const sign = val > 0 && plus ? '+' : (val < 0 ? '-' : '');
+      return `<span class="ltr-num">${sign}${Math.abs(val).toFixed(dec)}%</span>`;
     }
 
-    function formatPctPlain(val, decimals = 1, showPlus = true) {
-      const sign = val > 0 && showPlus ? '+' : (val < 0 ? '-' : '');
-      return `${sign}${Math.abs(val).toFixed(decimals)}%`;
+    function fmtPctPlain(val, dec = 1, plus = true) {
+      const sign = val > 0 && plus ? '+' : (val < 0 ? '-' : '');
+      return `${sign}${Math.abs(val).toFixed(dec)}%`;
     }
 
     function showToast(msg) {
       const banner = document.getElementById('toastBanner');
-      const msgEl = document.getElementById('toastMessage');
-      msgEl.textContent = msg;
+      document.getElementById('toastMessage').textContent = msg;
       banner.classList.remove('hidden');
       if (toastTimer) clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        banner.classList.add('hidden');
-      }, 3600);
+      toastTimer = setTimeout(() => banner.classList.add('hidden'), 4000);
     }
 
-    /**
-     * Computes annualized IRR for a series of annual cashflows via binary search.
-     * cashflows[0] = initial deposit (positive), cashflows[1..N] = annual deposits,
-     * endVal = final portfolio value.
-     */
-    function calculateAnnualIRR(initial, annualDeposit, years, endVal) {
+    // Annualized IRR via binary search (handles both lump-sum and monthly deposits accurately)
+    function calcIRR(initial, annualDep, years, finalVal) {
       if (years <= 0) return 0;
-      if (annualDeposit === 0) {
+      if (annualDep === 0) {
         if (initial <= 0) return 0;
-        return (Math.pow(Math.max(endVal, 0.0001) / initial, 1 / years) - 1) * 100;
+        return (Math.pow(Math.max(finalVal, 0.0001) / initial, 1 / years) - 1) * 100;
       }
-      let low = -0.95;
-      let high = 2.0;
+      let lo = -0.95, hi = 2.0;
       for (let i = 0; i < 60; i++) {
-        const mid = (low + high) / 2;
+        const mid = (lo + hi) / 2;
         let fv = initial * Math.pow(1 + mid, years);
         for (let y = 0; y < years; y++) {
-          // Approximate mid-year deposit compounding
-          fv += annualDeposit * Math.pow(1 + mid, years - y - 0.5);
+          fv += annualDep * Math.pow(1 + mid, years - y - 0.5);
         }
-        if (fv > endVal) high = mid;
-        else low = mid;
+        if (fv > finalVal) hi = mid;
+        else lo = mid;
       }
-      return ((low + high) / 2) * 100;
+      return ((lo + hi) / 2) * 100;
     }
 
     /*************************************************************************
-     * 4. TAB NAVIGATION
+     * 4. TAB SWITCHING
      *************************************************************************/
     function switchTab(tabId) {
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll('.tab-panel').forEach(el => el.classList.add('hidden'));
       document.getElementById(tabId).classList.remove('hidden');
 
       const map = { tab1: 'tabBtn1', tab2: 'tabBtn2', tab3: 'tabBtn3' };
@@ -774,112 +929,100 @@
         btn.classList.remove('bg-white', 'text-blue-700', 'shadow-sm', 'font-bold');
         btn.classList.add('text-slate-600', 'font-semibold');
       });
-      const activeBtn = document.getElementById(map[tabId]);
-      activeBtn.classList.add('bg-white', 'text-blue-700', 'shadow-sm', 'font-bold');
-      activeBtn.classList.remove('text-slate-600', 'font-semibold');
+      const active = document.getElementById(map[tabId]);
+      active.classList.add('bg-white', 'text-blue-700', 'shadow-sm', 'font-bold');
+      active.classList.remove('text-slate-600', 'font-semibold');
 
-      // Render active tab so Chart.js measures visible canvas cleanly
       if (tabId === 'tab1') renderTab1();
       if (tabId === 'tab2') renderTab2();
       if (tabId === 'tab3') renderTab3();
     }
 
     /*************************************************************************
-     * 5. TAB 1: HISTORICAL EXPLORER
+     * 5. TAB 1: HISTORICAL COMPARISON LOGIC
      *************************************************************************/
-    function populateTab1Years(minYear) {
+    function populateTab1Years() {
       const startSel = document.getElementById('t1StartYear');
       const endSel = document.getElementById('t1EndYear');
-      const prevStart = parseInt(startSel.value, 10) || (minYear === 1986 ? 2006 : 1999);
-      const prevEnd = parseInt(endSel.value, 10) || 2025;
-
       startSel.innerHTML = '';
       endSel.innerHTML = '';
-      for (let y = minYear; y <= 2025; y++) {
+      for (let y = 1956; y <= 2025; y++) {
         startSel.add(new Option(y, y));
         endSel.add(new Option(y, y));
       }
-      startSel.value = Math.max(minYear, Math.min(prevStart, 2025));
-      endSel.value = Math.max(parseInt(startSel.value, 10), Math.min(prevEnd, 2025));
+      startSel.value = 1992;
+      endSel.value = 2025;
     }
 
-    function onTab1ModeChange() {
-      const mode = document.getElementById('t1Mode').value;
-      const customFx = document.getElementById('t1CustomFxToggle').checked;
-      const isIls = mode.endsWith('_ils');
-      const minYear = (isIls && !customFx) ? 1986 : 1956;
-
-      document.querySelectorAll('.t1CurrSym').forEach(el => {
-        el.textContent = isIls ? '₪' : '$';
-      });
-
-      const noteEl = document.getElementById('t1IlsNote');
-      if (isIls && !customFx) {
-        noteEl.textContent = 'ℹ️ נתוני השקל החדש ואינפלציה ישראלית היסטורית זמינים מ-1986 (לאחר תוכנית הייצוב של 1985).';
-        noteEl.classList.remove('hidden');
-      } else if (isIls && customFx) {
-        noteEl.textContent = 'ℹ️ מצב שער דולר מותאם אישית פעיל: לפני 1986 נעשה שימוש באינפלציה אמריקאית כקירוב.';
-        noteEl.classList.remove('hidden');
+    function setTab1Real(isReal) {
+      state.t1Real = isReal;
+      const rBtn = document.getElementById('t1RealBtn');
+      const nBtn = document.getElementById('t1NomBtn');
+      if (isReal) {
+        rBtn.className = 'py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
+        nBtn.className = 'py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
       } else {
-        noteEl.textContent = 'ℹ️ מצב דולרי: נתוני S&P 500 ואינפלציה אמריקאית מלאים לכל 70 השנים (1956–2025).';
-        noteEl.classList.remove('hidden');
+        nBtn.className = 'py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
+        rBtn.className = 'py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
       }
-
-      populateTab1Years(minYear);
       renderTab1();
     }
 
-    function onCustomFxToggle() {
-      const checked = document.getElementById('t1CustomFxToggle').checked;
-      const box = document.getElementById('t1CustomFxInputs');
+    function setTab1Currency(curr) {
+      state.t1Currency = curr;
+      const ilsBtn = document.getElementById('t1IlsBtn');
+      const usdBtn = document.getElementById('t1UsdBtn');
+      if (curr === 'ils') {
+        ilsBtn.className = 'py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
+        usdBtn.className = 'py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+        // If user was on a pre-1986 year and switches to ILS, bump start year to 1986 with toast
+        const sy = parseInt(document.getElementById('t1StartYear').value, 10);
+        if (sy < 1986) {
+          document.getElementById('t1StartYear').value = 1992;
+          showToast('נתוני השקל החדש ומדד ישראל זמינים מ-1986 (ות"א-125 מ-1992) — שנת הכניסה עודכנה ל-1992.');
+        }
+      } else {
+        usdBtn.className = 'py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
+        ilsBtn.className = 'py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+      }
+      document.querySelectorAll('.t1CurrSym').forEach(el => el.textContent = curr === 'ils' ? '₪' : '$');
+      renderTab1();
+    }
+
+    function onWhatIfFxToggle() {
+      const checked = document.getElementById('t1WhatIfFxToggle').checked;
+      const box = document.getElementById('t1WhatIfFxBox');
       if (checked) {
         box.classList.remove('hidden');
-        // Ensure ILS mode if user turned on custom USD/ILS
-        const modeSel = document.getElementById('t1Mode');
-        if (!modeSel.value.endsWith('_ils')) {
-          modeSel.value = 'real_ils';
-          showToast('המצב הועבר לשקלים כדי לשקף את שער הדולר המותאם.');
+        if (state.t1Currency !== 'ils') {
+          setTab1Currency('ils');
+          showToast('התצוגה הועברה לשקלים (₪) להצגת השפעת שער הדולר.');
         }
       } else {
         box.classList.add('hidden');
       }
-      onTab1ModeChange();
-    }
-
-    function applyPreset(startY, endY) {
-      const modeSel = document.getElementById('t1Mode');
-      const customFx = document.getElementById('t1CustomFxToggle').checked;
-      if (startY < 1986 && modeSel.value.endsWith('_ils') && !customFx) {
-        modeSel.value = 'real_usd';
-        showToast('תקופה זו קודמת ל-1986 — הועבר למצב "ריאלי בדולר" להצגת כל הנתונים.');
-        onTab1ModeChange();
-      }
-      document.getElementById('t1StartYear').value = startY;
-      document.getElementById('t1EndYear').value = endY;
       renderTab1();
     }
 
-    function setTab1ChartType(type) {
-      tab1ChartType = type;
-      const lineBtn = document.getElementById('t1ChartModeLine');
-      const barBtn = document.getElementById('t1ChartModeBar');
-      if (type === 'line') {
-        lineBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
-        barBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+    function applyPreset(startY, endY, curr) {
+      document.getElementById('t1StartYear').value = startY;
+      document.getElementById('t1EndYear').value = endY;
+      state.t1Currency = curr;
+      const ilsBtn = document.getElementById('t1IlsBtn');
+      const usdBtn = document.getElementById('t1UsdBtn');
+      if (curr === 'ils') {
+        ilsBtn.className = 'py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
+        usdBtn.className = 'py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
       } else {
-        barBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
-        lineBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+        usdBtn.className = 'py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
+        ilsBtn.className = 'py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
       }
+      document.querySelectorAll('.t1CurrSym').forEach(el => el.textContent = curr === 'ils' ? '₪' : '$');
       renderTab1();
     }
 
     function renderTab1() {
       try {
-        const mode = document.getElementById('t1Mode').value;
-        const isIls = mode.endsWith('_ils');
-        const isReal = mode.startsWith('real_');
-        const currSym = isIls ? '₪' : '$';
-
         let startYear = parseInt(document.getElementById('t1StartYear').value, 10);
         let endYear = parseInt(document.getElementById('t1EndYear').value, 10);
         if (endYear < startYear) {
@@ -887,265 +1030,443 @@
           document.getElementById('t1EndYear').value = endYear;
         }
 
+        // If user selected pre-1986 while in ILS mode, auto-switch to USD cleanly
+        if (startYear < 1986 && state.t1Currency === 'ils') {
+          state.t1Currency = 'usd';
+          document.getElementById('t1UsdBtn').className = 'py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
+          document.getElementById('t1IlsBtn').className = 'py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+          document.querySelectorAll('.t1CurrSym').forEach(el => el.textContent = '$');
+          showToast('לפני 1986 לא היו נתוני שקל חדש — התצוגה הועברה אוטומטית לדולר ($).');
+        }
+
+        const isIls = state.t1Currency === 'ils';
+        const isReal = state.t1Real;
+        const sym = isIls ? '₪' : '$';
         const initial = Math.max(0, parseFloat(document.getElementById('t1Initial').value) || 0);
         const monthly = Math.max(0, parseFloat(document.getElementById('t1Monthly').value) || 0);
-        const useDiv = document.getElementById('t1Dividends').checked;
         const useTax = document.getElementById('t1Tax').checked;
-        const customFx = document.getElementById('t1CustomFxToggle').checked && isIls;
-        const fxStartCustom = Math.max(0.5, parseFloat(document.getElementById('t1FxStart').value) || 3.70);
-        const fxEndCustom = Math.max(0.5, parseFloat(document.getElementById('t1FxEnd').value) || 3.70);
+        const whatIfFx = document.getElementById('t1WhatIfFxToggle').checked && isIls;
+        const whatIfFxEnd = parseFloat(document.getElementById('t1WhatIfFxSlider').value) || 3.60;
+        document.getElementById('t1WhatIfFxVal').textContent = `₪${whatIfFxEnd.toFixed(2)}`;
 
+        const hasTa125 = startYear >= 1992;
         const numYears = endYear - startYear + 1;
-        const customAnnualFxFactor = Math.pow(fxEndCustom / fxStartCustom, 1 / numYears);
 
-        const labels = [];
-        const nomSeries = [];
-        const realSeries = [];
-        const annualReturnsSeries = [];
+        // Info banner for pre-1992
+        const banner = document.getElementById('t1InfoBanner');
+        const bannerText = document.getElementById('t1InfoBannerText');
+        if (!hasTa125) {
+          banner.classList.remove('hidden');
+          bannerText.textContent = `נתוני מדד ת"א-125 הרשמיים מתחילים בשנת 1992. מכיוון שנבחרה שנת כניסה ${startYear}, מוצגים ביצועי S&P 500 וההשקעה הבטוחה בלבד עבור התקופה המלאה (להשוואה ישירה מול ת"א-125 בחרו שנת כניסה 1992 ומעלה).`;
+        } else {
+          banner.classList.add('hidden');
+        }
 
-        let nominalVal = initial;
-        let indexedPrincipal = initial;
-        let totalDeposited = initial;
-        let cumInflation = 1.0;
-        let cumFxFactor = 1.0;
+        // Compute FX scaling if What-If FX override is enabled
+        const baseStartFx = DATA.usdIls[startYear - 1] || DATA.usdIls[1985];
+        const baseEndFx = DATA.usdIls[endYear] || 3.60;
+        // Smooth annual multiplier adjustment so final FX equals whatIfFxEnd
+        const fxScaleAnnual = whatIfFx
+          ? Math.pow((whatIfFxEnd / baseStartFx) / (baseEndFx / baseStartFx), 1 / numYears)
+          : 1.0;
 
-        // Baseline point (start of startYear)
-        labels.push(`תחילת ${startYear}`);
-        nomSeries.push(nominalVal);
-        realSeries.push(nominalVal);
+        // Simulation accumulators
+        let spNom = initial, taNom = initial, safeNom = initial;
+        let indexedBasis = initial, totalDep = initial;
+        let cumInf = 1.0, cumFx = 1.0;
 
-        let peakTracked = nominalVal;
-        let maxDrawdown = 0;
+        // Pure 1-unit wealth indices for accurate Max Drawdown (independent of monthly deposits)
+        let spUnit = 1.0, taUnit = 1.0;
+        let spPeak = 1.0, taPeak = 1.0;
+        let spMaxDd = 0, taMaxDd = 0;
 
-        const barLabels = [];
+        const labels = [`תחילת ${startYear}`];
+        const spSeries = [initial];
+        const taSeries = [hasTa125 ? initial : null];
+        const safeSeries = [initial];
+        const prinSeries = [initial];
+
+        const barYears = [];
+        const spAnnualBars = [];
+        const taAnnualBars = [];
+        const fxTrendLine = [];
+
+        const csvRows = [];
 
         for (let y = startYear; y <= endYear; y++) {
-          const spRet = (useDiv ? HISTORICAL_DATA.sp500Total[y] : HISTORICAL_DATA.sp500Price[y]) / 100;
-          let fxFactor = 1.0;
-          if (isIls) {
-            if (customFx) {
-              fxFactor = customAnnualFxFactor;
-            } else {
-              fxFactor = HISTORICAL_DATA.usdIls[y] / HISTORICAL_DATA.usdIls[y - 1];
-            }
-          }
-          cumFxFactor *= fxFactor;
+          const spRetUsd = DATA.sp500[y] / 100;
+          const fxPrev = DATA.usdIls[y - 1];
+          const fxCurr = DATA.usdIls[y];
+          const rawFxFactor = (fxPrev && fxCurr) ? (fxCurr / fxPrev) : 1.0;
+          const effFxFactor = isIls ? (rawFxFactor * fxScaleAnnual) : rawFxFactor;
+          cumFx *= effFxFactor;
 
-          const cpiPct = (isIls && HISTORICAL_DATA.ilCpi[y] !== undefined)
-            ? HISTORICAL_DATA.ilCpi[y]
-            : HISTORICAL_DATA.usCpi[y];
+          const cpiPct = isIls ? DATA.ilCpi[y] : DATA.usCpi[y];
           const cpiRate = cpiPct / 100;
 
-          const annualNomFactor = (1 + spRet) * fxFactor;
-          const monthlyNomFactor = Math.pow(Math.max(annualNomFactor, 0.01), 1 / 12);
-          const monthlyCpiFactor = Math.pow(Math.max(1 + cpiRate, 0.01), 1 / 12);
+          // Annual nominal factors in chosen currency
+          const spNomFactor = isIls ? ((1 + spRetUsd) * effFxFactor) : (1 + spRetUsd);
+          const taRetIls = DATA.ta125[y] !== undefined ? DATA.ta125[y] / 100 : null;
+          const taNomFactor = (taRetIls !== null)
+            ? (isIls ? (1 + taRetIls) : ((1 + taRetIls) / rawFxFactor))
+            : null;
+          const safeNomFactor = 1 + ((isIls ? DATA.safeIl[y] : DATA.safeUs[y]) / 100);
 
-          // Simulate 12 months inside year y for accurate monthly deposits & inflation indexing
+          // Monthly compounding inside year y
+          const mSp = Math.pow(Math.max(spNomFactor, 0.01), 1 / 12);
+          const mTa = taNomFactor !== null ? Math.pow(Math.max(taNomFactor, 0.01), 1 / 12) : 1;
+          const mSafe = Math.pow(Math.max(safeNomFactor, 0.01), 1 / 12);
+          const mCpi = Math.pow(Math.max(1 + cpiRate, 0.01), 1 / 12);
+
           for (let m = 0; m < 12; m++) {
-            nominalVal = (nominalVal + monthly) * monthlyNomFactor;
-            indexedPrincipal = (indexedPrincipal + monthly) * monthlyCpiFactor;
-            totalDeposited += monthly;
+            spNom = (spNom + monthly) * mSp;
+            if (hasTa125) taNom = (taNom + monthly) * mTa;
+            safeNom = (safeNom + monthly) * mSafe;
+            indexedBasis = (indexedBasis + monthly) * mCpi;
+            totalDep += monthly;
           }
 
-          cumInflation *= (1 + cpiRate);
+          cumInf *= (1 + cpiRate);
 
-          const currentReal = nominalVal / cumInflation;
+          // Unit index drawdown tracking
+          const spStep = isReal ? (spNomFactor / (1 + cpiRate)) : spNomFactor;
+          spUnit *= spStep;
+          if (spUnit > spPeak) spPeak = spUnit;
+          const ddSp = ((spUnit - spPeak) / spPeak) * 100;
+          if (ddSp < spMaxDd) spMaxDd = ddSp;
+
+          if (hasTa125 && taNomFactor !== null) {
+            const taStep = isReal ? (taNomFactor / (1 + cpiRate)) : taNomFactor;
+            taUnit *= taStep;
+            if (taUnit > taPeak) taPeak = taUnit;
+            const ddTa = ((taUnit - taPeak) / taPeak) * 100;
+            if (ddTa < taMaxDd) taMaxDd = ddTa;
+          }
+
+          const spDisp = isReal ? (spNom / cumInf) : spNom;
+          const taDisp = hasTa125 ? (isReal ? (taNom / cumInf) : taNom) : null;
+          const safeDisp = isReal ? (safeNom / cumInf) : safeNom;
+          const prinDisp = isReal ? (indexedBasis / cumInf) : totalDep;
+
           labels.push(`${y}`);
-          nomSeries.push(nominalVal);
-          realSeries.push(currentReal);
+          spSeries.push(spDisp);
+          taSeries.push(taDisp);
+          safeSeries.push(safeDisp);
+          prinSeries.push(prinDisp);
 
-          // Annual return bar (real or nominal depending on mode)
-          const annualDisplayRet = isReal
-            ? ((annualNomFactor / (1 + cpiRate)) - 1) * 100
-            : (annualNomFactor - 1) * 100;
-          barLabels.push(`${y}`);
-          annualReturnsSeries.push(annualDisplayRet);
+          const spAnnPct = (isReal ? (spNomFactor / (1 + cpiRate) - 1) : (spNomFactor - 1)) * 100;
+          const taAnnPct = (taNomFactor !== null)
+            ? ((isReal ? (taNomFactor / (1 + cpiRate) - 1) : (taNomFactor - 1)) * 100)
+            : null;
 
-          // Drawdown tracking on pure price/return index (independent of monthly deposits) or portfolio value
-          const trackedVal = isReal ? currentReal : nominalVal;
-          if (trackedVal > peakTracked) peakTracked = trackedVal;
-          if (peakTracked > 0) {
-            const dd = ((trackedVal - peakTracked) / peakTracked) * 100;
-            if (dd < maxDrawdown) maxDrawdown = dd;
-          }
+          const effFxRateThisYear = (DATA.usdIls[y] !== undefined)
+            ? (baseStartFx * cumFx)
+            : null;
+
+          barYears.push(`${y}`);
+          spAnnualBars.push(spAnnPct);
+          taAnnualBars.push(taAnnPct);
+          fxTrendLine.push(isIls ? effFxRateThisYear : (DATA.usdIls[y] || null));
+
+          csvRows.push({
+            year: y,
+            spVal: Math.round(spDisp),
+            taVal: taDisp !== null ? Math.round(taDisp) : '',
+            safeVal: Math.round(safeDisp),
+            principal: Math.round(prinDisp),
+            spAnn: spAnnPct.toFixed(2),
+            taAnn: taAnnPct !== null ? taAnnPct.toFixed(2) : '',
+            fx: effFxRateThisYear ? effFxRateThisYear.toFixed(2) : (DATA.usdIls[y] ? DATA.usdIls[y].toFixed(2) : ''),
+            cpi: cpiPct.toFixed(2)
+          });
         }
 
-        // Apply 25% real capital gains tax at the end if checked
-        let taxAmountNom = 0;
-        if (useTax) {
-          const realGainNom = Math.max(0, nominalVal - indexedPrincipal);
-          taxAmountNom = realGainNom * 0.25;
+        // Apply 25% real capital gains tax at exit if toggled
+        const applyTax = (nomVal) => {
+          if (!useTax) return nomVal;
+          const realGain = Math.max(0, nomVal - indexedBasis);
+          return nomVal - (realGain * 0.25);
+        };
+
+        const spNetNom = applyTax(spNom);
+        const taNetNom = hasTa125 ? applyTax(taNom) : null;
+        const safeNetNom = applyTax(safeNom);
+
+        const spFinal = isReal ? (spNetNom / cumInf) : spNetNom;
+        const taFinal = hasTa125 ? (isReal ? (taNetNom / cumInf) : taNetNom) : null;
+        const safeFinal = isReal ? (safeNetNom / cumInf) : safeNetNom;
+        const prinFinal = isReal ? (indexedBasis / cumInf) : totalDep;
+
+        // Update final point on chart to reflect post-tax value
+        spSeries[spSeries.length - 1] = spFinal;
+        if (hasTa125) taSeries[taSeries.length - 1] = taFinal;
+        safeSeries[safeSeries.length - 1] = safeFinal;
+
+        state.lastCsvRows = csvRows;
+
+        // Compute KPIs
+        const spTotRetPct = prinFinal > 0 ? ((spFinal / prinFinal) - 1) * 100 : 0;
+        const spCagr = calcIRR(initial, monthly * 12, numYears, spFinal);
+
+        const taTotRetPct = (hasTa125 && prinFinal > 0) ? ((taFinal / prinFinal) - 1) * 100 : null;
+        const taCagr = hasTa125 ? calcIRR(initial, monthly * 12, numYears, taFinal) : null;
+
+        const safeTotRetPct = prinFinal > 0 ? ((safeFinal / prinFinal) - 1) * 100 : 0;
+        const safeCagr = calcIRR(initial, monthly * 12, numYears, safeFinal);
+
+        // Update Card Titles & Values
+        document.getElementById('t1SpTitle').textContent = isIls ? 'S&P 500 (בשקלים)' : 'S&P 500 (בדולר)';
+        document.getElementById('t1TaTitle').textContent = isIls ? 'ת"א-125 (הבורסה הישראלית)' : 'ת"א-125 (מתורגם לדולר)';
+        document.getElementById('t1SafeTitle').textContent = isIls ? 'השקעה בטוחה (מק"מ ישראל)' : 'השקעה בטוחה (אג"ח קצר ארה"ב)';
+
+        const modeWord = `${isReal ? 'ריאלי' : 'נומינלי'}${useTax ? ', אחרי מס' : ''}`;
+        document.getElementById('t1SpFinal').innerHTML = fmtCurr(spFinal, sym);
+        document.getElementById('t1SpSub').innerHTML = `שווי ${modeWord} | קרן: ${fmtCurr(prinFinal, sym)}`;
+        document.getElementById('t1SpTotRet').innerHTML = fmtPct(spTotRetPct, 0);
+        document.getElementById('t1SpCagr').innerHTML = fmtPct(spCagr, 2);
+        document.getElementById('t1SpDd').innerHTML = fmtPct(spMaxDd, 1, false);
+
+        if (hasTa125) {
+          document.getElementById('t1TaFinal').innerHTML = fmtCurr(taFinal, sym);
+          document.getElementById('t1TaSub').innerHTML = `שווי ${modeWord} | קרן: ${fmtCurr(prinFinal, sym)}`;
+          document.getElementById('t1TaTotRet').innerHTML = fmtPct(taTotRetPct, 0);
+          document.getElementById('t1TaCagr').innerHTML = fmtPct(taCagr, 2);
+          document.getElementById('t1TaDd').innerHTML = fmtPct(taMaxDd, 1, false);
+        } else {
+          document.getElementById('t1TaFinal').innerHTML = '<span class="text-slate-400 text-lg">לא זמין לפני 1992</span>';
+          document.getElementById('t1TaSub').textContent = 'בחרו שנת כניסה 1992 ומעלה להשוואה';
+          document.getElementById('t1TaTotRet').textContent = '—';
+          document.getElementById('t1TaCagr').textContent = '—';
+          document.getElementById('t1TaDd').textContent = '—';
         }
-        const netNominal = nominalVal - taxAmountNom;
-        const netReal = netNominal / cumInflation;
 
-        // Update last point on chart if tax applied
-        nomSeries[nomSeries.length - 1] = netNominal;
-        realSeries[realSeries.length - 1] = netReal;
+        document.getElementById('t1SafeFinal').innerHTML = fmtCurr(safeFinal, sym);
+        document.getElementById('t1SafeSub').innerHTML = `אינפלציה מצטברת: ${fmtPct((cumInf - 1) * 100, 1)}`;
+        document.getElementById('t1SafeTotRet').innerHTML = fmtPct(safeTotRetPct, 0);
+        document.getElementById('t1SafeCagr').innerHTML = fmtPct(safeCagr, 2);
 
-        // Calculate KPIs
-        const displayedFinal = isReal ? netReal : netNominal;
-        const totalDepositedRealEquiv = indexedPrincipal / cumInflation; // in start-year purchasing power
-        const mult = totalDepositedRealEquiv > 0 ? (netReal / totalDepositedRealEquiv) : 0;
-
-        // Real CAGR / IRR
-        const realCagr = calculateAnnualIRR(initial, monthly * 12, numYears, netReal);
-        const nomCagr = calculateAnnualIRR(initial, monthly * 12, numYears, netNominal);
-        const fxTotalPct = (cumFxFactor - 1) * 100;
-        const infTotalPct = (cumInflation - 1) * 100;
-
-        // Populate KPI DOM
-        document.getElementById('kpi1Label').textContent = isReal
-          ? `שווי תיק סופי (ריאלי${useTax ? ', אחרי מס' : ''})`
-          : `שווי תיק סופי (נומינלי${useTax ? ', אחרי מס' : ''})`;
-        document.getElementById('kpi1Value').innerHTML = formatCurrency(displayedFinal, currSym);
-        document.getElementById('kpi1Sub').innerHTML = isReal
-          ? `נומינלי בחשבון: ${formatCurrency(netNominal, currSym)}${useTax ? ` (מס: ${formatCurrency(taxAmountNom, currSym)})` : ''}`
-          : `כוח קנייה ריאלי: ${formatCurrency(netReal, currSym)}`;
-
-        document.getElementById('kpi2Value').innerHTML = `<span class="ltr-num">×${mult.toFixed(2)}</span>`;
-        document.getElementById('kpi2Value').className = `text-2xl sm:text-3xl font-extrabold mt-2 tabular-nums ${mult >= 1 ? 'text-emerald-600' : 'text-red-600'}`;
-        document.getElementById('kpi2Sub').innerHTML = `סך הפקדות: ${formatCurrency(totalDeposited, currSym)} (${numYears} שנים)`;
-
-        document.getElementById('kpi3Label').textContent = isReal
-          ? 'תשואה שנתית ריאלית (CAGR)'
-          : 'תשואה שנתית נומינלית (CAGR)';
-        const shownCagr = isReal ? realCagr : nomCagr;
-        document.getElementById('kpi3Value').innerHTML = formatPct(shownCagr, 2);
-        document.getElementById('kpi3Value').className = `text-2xl sm:text-3xl font-extrabold mt-2 tabular-nums ${shownCagr >= 0 ? 'text-emerald-600' : 'text-red-600'}`;
-        document.getElementById('kpi3Sub').innerHTML = `אינפלציה מצטברת בתקופה: ${formatPct(infTotalPct, 1)}`;
-
-        document.getElementById('kpi4Value').innerHTML = formatPct(maxDrawdown, 1, false);
         if (isIls) {
-          const fxStartRate = customFx ? fxStartCustom : HISTORICAL_DATA.usdIls[startYear - 1];
-          const fxEndRate = customFx ? fxEndCustom : HISTORICAL_DATA.usdIls[endYear];
-          document.getElementById('kpi4Sub').innerHTML = `השפעת הדולר: ${formatPct(fxTotalPct, 1)} (<span class="ltr-num">${fxStartRate.toFixed(2)} → ${fxEndRate.toFixed(2)}</span>)`;
+          const fxPct = (cumFx - 1) * 100;
+          document.getElementById('t1FxDelta').innerHTML = fmtPct(fxPct, 1);
         } else {
-          document.getElementById('kpi4Sub').textContent = 'מצב דולרי — ללא השפעת שער חליפין';
+          document.getElementById('t1FxDelta').textContent = 'ללא (דולר)';
         }
 
-        // Render Chart
-        const ctx = document.getElementById('t1Chart').getContext('2d');
-        if (tab1ChartInstance) tab1ChartInstance.destroy();
+        // Winner Badge Highlight
+        const bestVal = Math.max(spFinal, hasTa125 ? taFinal : -Infinity, safeFinal);
+        const cardConfigs = [
+          { card: 't1CardSp', badge: 't1WinnerSp', val: spFinal, border: 'border-emerald-500' },
+          { card: 't1CardTa', badge: 't1WinnerTa', val: hasTa125 ? taFinal : -Infinity, border: 'border-blue-600' },
+          { card: 't1CardSafe', badge: 't1WinnerSafe', val: safeFinal, border: 'border-slate-500' }
+        ];
+        cardConfigs.forEach(c => {
+          const cEl = document.getElementById(c.card);
+          const bEl = document.getElementById(c.badge);
+          cEl.classList.remove('border-2', 'border-emerald-500', 'border-blue-600', 'border-slate-500', 'border', 'border-slate-200');
+          if (Math.abs(c.val - bestVal) < 1) {
+            cEl.classList.add('border-2', c.border);
+            bEl.classList.remove('hidden');
+          } else {
+            cEl.classList.add('border', 'border-slate-200');
+            bEl.classList.add('hidden');
+          }
+        });
 
-        if (tab1ChartType === 'line') {
-          document.getElementById('t1ChartTitle').textContent = `התפתחות התיק (${startYear}–${endYear}): שווי נומינלי מול כוח קנייה ריאלי`;
-          document.getElementById('t1ChartSub').textContent = `ערכים ב-${currSym} • קו כחול: שווי נומינלי | קו ירוק: כוח קנייה ריאלי בניכוי אינפלציה`;
+        // Render Growth Line Chart
+        document.getElementById('t1GrowthTitle').textContent = `התפתחות התיק (${startYear}–${endYear}, ${modeWord} ב-${sym})`;
+        const ctx1 = document.getElementById('t1GrowthChart').getContext('2d');
+        if (t1GrowthChart) t1GrowthChart.destroy();
 
-          tab1ChartInstance = new Chart(ctx, {
-            type: 'line',
-            data: {
-              labels,
-              datasets: [
-                {
-                  label: `שווי נומינלי (${currSym})`,
-                  data: nomSeries,
-                  borderColor: '#2563eb',
-                  backgroundColor: 'rgba(37, 99, 235, 0.08)',
-                  borderWidth: 2.5,
-                  pointRadius: numYears > 25 ? 0 : 3,
-                  pointHoverRadius: 5,
-                  tension: 0.2,
-                  fill: false
-                },
-                {
-                  label: `כוח קנייה ריאלי (${currSym})`,
-                  data: realSeries,
-                  borderColor: '#10b981',
-                  backgroundColor: 'rgba(16, 185, 129, 0.12)',
-                  borderWidth: 3,
-                  pointRadius: numYears > 25 ? 0 : 3,
-                  pointHoverRadius: 5,
-                  tension: 0.2,
-                  fill: true
-                }
-              ]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              interaction: { mode: 'index', intersect: false },
-              plugins: {
-                legend: { position: 'top', labels: { usePointStyle: true, padding: 16, font: { weight: '600' } } },
-                tooltip: {
-                  rtl: true,
-                  callbacks: {
-                    label: (c) => ` ${c.dataset.label}: ${formatCurrencyPlain(c.parsed.y, currSym)}`
-                  }
-                }
-              },
-              scales: {
-                y: {
-                  grid: { color: '#f1f5f9' },
-                  ticks: {
-                    callback: (v) => formatCurrencyPlain(v, currSym)
-                  }
-                },
-                x: {
-                  grid: { display: false },
-                  ticks: { maxTicksLimit: 14 }
+        const growthDatasets = [
+          {
+            label: isIls ? 'S&P 500 (בשקלים)' : 'S&P 500 (בדולר)',
+            data: spSeries,
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.08)',
+            borderWidth: 3,
+            pointRadius: numYears > 25 ? 0 : 2.5,
+            pointHoverRadius: 5,
+            tension: 0.2,
+            fill: true
+          }
+        ];
+        if (hasTa125) {
+          growthDatasets.push({
+            label: isIls ? 'ת"א-125 (ישראל)' : 'ת"א-125 (בדולר)',
+            data: taSeries,
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.06)',
+            borderWidth: 3,
+            pointRadius: numYears > 25 ? 0 : 2.5,
+            pointHoverRadius: 5,
+            tension: 0.2,
+            fill: false
+          });
+        }
+        growthDatasets.push(
+          {
+            label: 'השקעה בטוחה',
+            data: safeSeries,
+            borderColor: '#64748b',
+            borderWidth: 2,
+            pointRadius: 0,
+            pointHoverRadius: 4,
+            tension: 0.2,
+            fill: false
+          },
+          {
+            label: 'סך הקרן שהופקדה',
+            data: prinSeries,
+            borderColor: '#94a3b8',
+            borderDash: [6, 4],
+            borderWidth: 1.5,
+            pointRadius: 0,
+            fill: false
+          }
+        );
+
+        t1GrowthChart = new Chart(ctx1, {
+          type: 'line',
+          data: { labels, datasets: growthDatasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { position: 'top', labels: { usePointStyle: true, padding: 16, font: { weight: '600' } } },
+              tooltip: {
+                rtl: true,
+                callbacks: {
+                  label: (c) => ` ${c.dataset.label}: ${fmtCurrPlain(c.parsed.y, sym)}`
                 }
               }
+            },
+            scales: {
+              y: {
+                grid: { color: '#f1f5f9' },
+                ticks: { callback: (v) => fmtCurrPlain(v, sym) }
+              },
+              x: { grid: { display: false }, ticks: { maxTicksLimit: 14 } }
             }
-          });
-        } else {
-          document.getElementById('t1ChartTitle').textContent = `תשואה שנתית ${isReal ? 'ריאלית' : 'נומינלית'} (${startYear}–${endYear})`;
-          document.getElementById('t1ChartSub').textContent = 'ירוק = שנה חיובית מעל 0% | אדום = שנה שלילית מתחת ל-0%';
+          }
+        });
 
-          tab1ChartInstance = new Chart(ctx, {
+        // Render Secondary Annual Returns + FX Trend Chart
+        const ctx2 = document.getElementById('t1AnnualChart').getContext('2d');
+        if (t1AnnualChart) t1AnnualChart.destroy();
+
+        const annualDatasets = [
+          {
             type: 'bar',
-            data: {
-              labels: barLabels,
-              datasets: [{
-                label: `תשואה שנתית ${isReal ? 'ריאלית' : 'נומינלית'} (%)`,
-                data: annualReturnsSeries,
-                backgroundColor: annualReturnsSeries.map(v => v >= 0 ? '#10b981' : '#ef4444'),
-                borderRadius: 4
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              plugins: {
-                legend: { display: false },
-                tooltip: {
-                  rtl: true,
-                  callbacks: {
-                    label: (c) => ` תשואה: ${formatPctPlain(c.parsed.y, 1)}`
-                  }
-                }
-              },
-              scales: {
-                y: {
-                  grid: { color: (ctx) => ctx.tick.value === 0 ? '#334155' : '#f1f5f9', lineWidth: (ctx) => ctx.tick.value === 0 ? 1.5 : 1 },
-                  ticks: { callback: (v) => `${v}%` }
-                },
-                x: {
-                  grid: { display: false },
-                  ticks: { maxTicksLimit: 18 }
-                }
-              }
-            }
+            label: `S&P 500 (${isReal ? 'ריאלי' : 'נומינלי'} %)`,
+            data: spAnnualBars,
+            backgroundColor: 'rgba(16, 185, 129, 0.82)',
+            borderRadius: 3,
+            yAxisID: 'y'
+          }
+        ];
+        if (hasTa125 || endYear >= 1992) {
+          annualDatasets.push({
+            type: 'bar',
+            label: `ת"א-125 (${isReal ? 'ריאלי' : 'נומינלי'} %)`,
+            data: taAnnualBars,
+            backgroundColor: 'rgba(37, 99, 235, 0.82)',
+            borderRadius: 3,
+            yAxisID: 'y'
           });
         }
+        if (fxTrendLine.some(v => v !== null)) {
+          annualDatasets.push({
+            type: 'line',
+            label: 'שער דולר/שקל (USD/ILS)',
+            data: fxTrendLine,
+            borderColor: '#d97706',
+            backgroundColor: '#d97706',
+            borderDash: [5, 3],
+            borderWidth: 2,
+            pointRadius: numYears > 35 ? 0 : 2.5,
+            tension: 0.2,
+            yAxisID: 'y1'
+          });
+        }
+
+        t1AnnualChart = new Chart(ctx2, {
+          data: { labels: barYears, datasets: annualDatasets },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { position: 'top', labels: { usePointStyle: true, padding: 14, font: { weight: '600' } } },
+              tooltip: {
+                rtl: true,
+                callbacks: {
+                  label: (c) => {
+                    if (c.dataset.yAxisID === 'y1') {
+                      return c.parsed.y !== null ? ` שער דולר: ₪${c.parsed.y.toFixed(2)}` : '';
+                    }
+                    return c.parsed.y !== null ? ` ${c.dataset.label}: ${fmtPctPlain(c.parsed.y, 1)}` : '';
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                position: 'right',
+                grid: { color: (c) => c.tick.value === 0 ? '#0f172a' : '#f1f5f9', lineWidth: (c) => c.tick.value === 0 ? 1.5 : 1 },
+                ticks: { callback: (v) => `${v}%` }
+              },
+              y1: {
+                position: 'left',
+                grid: { display: false },
+                ticks: { color: '#b45309', callback: (v) => `₪${Number(v).toFixed(1)}` }
+              },
+              x: { grid: { display: false }, ticks: { maxTicksLimit: 18 } }
+            }
+          }
+        });
       } catch (err) {
         console.error('Error in renderTab1:', err);
       }
     }
 
+    function exportTab1CSV() {
+      if (!state.lastCsvRows || state.lastCsvRows.length === 0) {
+        showToast('אין נתונים לייצוא.');
+        return;
+      }
+      const sym = state.t1Currency === 'ils' ? 'ILS' : 'USD';
+      const header = ['שנה', `תיק S&P 500 (${sym})`, `תיק ת"א-125 (${sym})`, `השקעה בטוחה (${sym})`, `קרן מופקדת (${sym})`, 'תשואה שנתית S&P 500 (%)', 'תשואה שנתית ת"א-125 (%)', 'שער USD/ILS', 'אינפלציה (%)'];
+      const lines = [header.join(',')];
+      state.lastCsvRows.forEach(r => {
+        lines.push([r.year, r.spVal, r.taVal, r.safeVal, r.principal, r.spAnn, r.taAnn, r.fx, r.cpi].join(','));
+      });
+      const csvContent = '\uFEFF' + lines.join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `sp500_vs_ta125_${document.getElementById('t1StartYear').value}_${document.getElementById('t1EndYear').value}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('קובץ ה-CSV הורד בהצלחה!');
+    }
+
     /*************************************************************************
-     * 6. TAB 2: ROLLING HOLDING PERIODS
+     * 6. TAB 2: ROLLING HORIZONS (1–33 YEARS)
      *************************************************************************/
-    function setTab2Mode(mode) {
-      tab2Mode = mode;
-      const usdBtn = document.getElementById('t2ModeUsd');
-      const ilsBtn = document.getElementById('t2ModeIls');
-      if (mode === 'usd') {
-        usdBtn.className = 'px-3.5 py-2 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
-        ilsBtn.className = 'px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+    function setTab2Real(isReal) {
+      state.t2Real = isReal;
+      const rBtn = document.getElementById('t2RealBtn');
+      const nBtn = document.getElementById('t2NomBtn');
+      if (isReal) {
+        rBtn.className = 'px-3.5 py-2 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
+        nBtn.className = 'px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
       } else {
-        ilsBtn.className = 'px-3.5 py-2 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
-        usdBtn.className = 'px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+        nBtn.className = 'px-3.5 py-2 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
+        rBtn.className = 'px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
       }
       renderTab2();
     }
@@ -1153,135 +1474,161 @@
     function renderTab2() {
       try {
         const horizon = parseInt(document.getElementById('t2Horizon').value, 10);
-        const safeRate = parseFloat(document.getElementById('t2SafeRate').value) / 100;
-        const useDiv = document.getElementById('t2Dividends').checked;
-
+        const isReal = state.t2Real;
         document.getElementById('t2HorizonVal').textContent = horizon === 1 ? 'שנה 1' : `${horizon} שנים`;
-        document.getElementById('t2SafeRateVal').textContent = `${(safeRate * 100).toFixed(2).replace(/\.00$/, '.0')}%`;
+        document.getElementById('t2Ref70Horizon').textContent = horizon;
 
-        const minYear = tab2Mode === 'usd' ? 1956 : 1986;
-        const maxStartYear = 2025 - horizon + 1;
-
+        // 1992–2025 Head-to-Head Rolling Windows in ILS
+        const minY = 1992;
+        const maxStart = 2025 - horizon + 1;
         const windows = [];
-        for (let startY = minYear; startY <= maxStartYear; startY++) {
-          const endY = startY + horizon - 1;
-          let nomFactor = 1.0;
-          let cpiFactor = 1.0;
-          let fxFactor = 1.0;
 
-          for (let y = startY; y <= endY; y++) {
-            const spRet = (useDiv ? HISTORICAL_DATA.sp500Total[y] : HISTORICAL_DATA.sp500Price[y]) / 100;
-            let yrFx = 1.0;
-            if (tab2Mode === 'ils') {
-              yrFx = HISTORICAL_DATA.usdIls[y] / HISTORICAL_DATA.usdIls[y - 1];
-            }
-            const yrCpi = (tab2Mode === 'ils' ? HISTORICAL_DATA.ilCpi[y] : HISTORICAL_DATA.usCpi[y]) / 100;
+        for (let s = minY; s <= maxStart; s++) {
+          const e = s + horizon - 1;
+          let spNomF = 1.0, taNomF = 1.0, cpiF = 1.0, fxF = 1.0;
 
-            nomFactor *= (1 + spRet) * yrFx;
-            fxFactor *= yrFx;
-            cpiFactor *= (1 + yrCpi);
+          for (let y = s; y <= e; y++) {
+            const yrFx = DATA.usdIls[y] / DATA.usdIls[y - 1];
+            spNomF *= (1 + DATA.sp500[y] / 100) * yrFx;
+            taNomF *= (1 + DATA.ta125[y] / 100);
+            cpiF *= (1 + DATA.ilCpi[y] / 100);
+            fxF *= yrFx;
           }
 
-          const realFactor = nomFactor / cpiFactor;
-          const realCagr = (Math.pow(realFactor, 1 / horizon) - 1) * 100;
-          const safeNomFactor = Math.pow(1 + safeRate, horizon);
-          const beatSafe = nomFactor > safeNomFactor;
+          const spF = isReal ? (spNomF / cpiF) : spNomF;
+          const taF = isReal ? (taNomF / cpiF) : taNomF;
+
+          const spCagr = (Math.pow(spF, 1 / horizon) - 1) * 100;
+          const taCagr = (Math.pow(taF, 1 / horizon) - 1) * 100;
 
           windows.push({
-            label: `${startY}–${endY}`,
-            startY,
-            endY,
-            realCagr,
-            realMult: realFactor,
-            nomPct: (nomFactor - 1) * 100,
-            infPct: (cpiFactor - 1) * 100,
-            fxPct: (fxFactor - 1) * 100,
-            beatSafe
+            label: `${s}–${e}`,
+            spCagr,
+            taCagr,
+            spMult: spF,
+            taMult: taF,
+            fxPct: (fxF - 1) * 100
           });
         }
 
         const total = windows.length;
-        const wins = windows.filter(w => w.realCagr >= 0).length;
-        const beatSafeCount = windows.filter(w => w.beatSafe).length;
+        const spWins = windows.filter(w => w.spCagr >= 0).length;
+        const taWins = windows.filter(w => w.taCagr >= 0).length;
+        const spBeatTa = windows.filter(w => w.spCagr > w.taCagr).length;
+        const taBeatSp = total - spBeatTa;
 
-        const worst = windows.reduce((a, b) => a.realCagr < b.realCagr ? a : b);
-        const best = windows.reduce((a, b) => a.realCagr > b.realCagr ? a : b);
-        const avgCagr = windows.reduce((s, w) => s + w.realCagr, 0) / total;
-        const avgMult = windows.reduce((s, w) => s + w.realMult, 0) / total;
+        const spWorst = windows.reduce((a, b) => a.spCagr < b.spCagr ? a : b);
+        const spBest = windows.reduce((a, b) => a.spCagr > b.spCagr ? a : b);
+        const spAvg = windows.reduce((sum, w) => sum + w.spCagr, 0) / total;
+        const spAvgMult = windows.reduce((sum, w) => sum + w.spMult, 0) / total;
 
-        const winPct = (wins / total) * 100;
-        const beatSafePct = (beatSafeCount / total) * 100;
+        const taWorst = windows.reduce((a, b) => a.taCagr < b.taCagr ? a : b);
+        const taBest = windows.reduce((a, b) => a.taCagr > b.taCagr ? a : b);
+        const taAvg = windows.reduce((sum, w) => sum + w.taCagr, 0) / total;
+        const taAvgMult = windows.reduce((sum, w) => sum + w.taMult, 0) / total;
 
-        // Update KPI Cards
-        document.getElementById('t2KpiWinRate').innerHTML = formatPct(winPct, 0, false);
-        document.getElementById('t2KpiWinRate').className = `text-2xl font-extrabold mt-1.5 tabular-nums ${winPct === 100 ? 'text-emerald-600' : (winPct >= 80 ? 'text-blue-600' : 'text-amber-600')}`;
-        document.getElementById('t2KpiWinCount').textContent = `${wins} מתוך ${total} תקופות היסטוריות`;
+        // Head-to-Head bar
+        const spBeatPct = (spBeatTa / total) * 100;
+        const taBeatPct = 100 - spBeatPct;
+        document.getElementById('t2SpBeatPct').innerHTML = fmtPct(spBeatPct, 0, false);
+        document.getElementById('t2TaBeatPct').innerHTML = fmtPct(taBeatPct, 0, false);
+        document.getElementById('t2HeadBarSp').style.width = `${spBeatPct}%`;
+        document.getElementById('t2HeadBarTa').style.width = `${taBeatPct}%`;
+        document.getElementById('t2HeadCount').textContent = `מתוך ${total} חלונות של ${horizon} שנים: S&P 500 ניצח ב-${spBeatTa}, ת"א-125 ניצח ב-${taBeatSp}`;
 
-        document.getElementById('t2KpiWorst').innerHTML = formatPct(worst.realCagr, 1);
-        document.getElementById('t2KpiWorst').className = `text-2xl font-extrabold mt-1.5 tabular-nums ${worst.realCagr >= 0 ? 'text-emerald-600' : 'text-red-600'}`;
-        document.getElementById('t2KpiWorstPeriod').innerHTML = `${worst.label} (מכפיל <span class="ltr-num">×${worst.realMult.toFixed(2)}</span>)`;
+        // S&P 500 Card
+        const spWinPct = (spWins / total) * 100;
+        document.getElementById('t2SpPosBadge').textContent = spWinPct === 100 ? '0% הפסדים!' : `${Math.round(100 - spWinPct)}% הפסד`;
+        document.getElementById('t2SpWinRate').innerHTML = fmtPct(spWinPct, 0, false);
+        document.getElementById('t2SpWinCount').textContent = `${spWins} מתוך ${total}`;
+        document.getElementById('t2SpWorst').innerHTML = fmtPct(spWorst.spCagr, 1);
+        document.getElementById('t2SpWorst').className = `text-xl font-extrabold mt-1 tabular-nums ${spWorst.spCagr >= 0 ? 'text-emerald-600' : 'text-red-600'}`;
+        document.getElementById('t2SpWorstYrs').textContent = spWorst.label;
+        document.getElementById('t2SpAvg').innerHTML = fmtPct(spAvg, 1);
+        document.getElementById('t2SpAvgMult').innerHTML = `מכפיל <span class="ltr-num">×${spAvgMult.toFixed(2)}</span>`;
+        document.getElementById('t2SpBest').innerHTML = fmtPct(spBest.spCagr, 1);
+        document.getElementById('t2SpBestYrs').textContent = spBest.label;
 
-        document.getElementById('t2KpiAvg').innerHTML = formatPct(avgCagr, 1);
-        document.getElementById('t2KpiAvgMult').innerHTML = `מכפיל ממוצע: <span class="ltr-num">×${avgMult.toFixed(2)}</span>`;
+        // TA-125 Card
+        const taWinPct = (taWins / total) * 100;
+        document.getElementById('t2TaPosBadge').textContent = taWinPct === 100 ? '0% הפסדים!' : `${Math.round(100 - taWinPct)}% הפסד`;
+        document.getElementById('t2TaWinRate').innerHTML = fmtPct(taWinPct, 0, false);
+        document.getElementById('t2TaWinCount').textContent = `${taWins} מתוך ${total}`;
+        document.getElementById('t2TaWorst').innerHTML = fmtPct(taWorst.taCagr, 1);
+        document.getElementById('t2TaWorst').className = `text-xl font-extrabold mt-1 tabular-nums ${taWorst.taCagr >= 0 ? 'text-blue-600' : 'text-red-600'}`;
+        document.getElementById('t2TaWorstYrs').textContent = taWorst.label;
+        document.getElementById('t2TaAvg').innerHTML = fmtPct(taAvg, 1);
+        document.getElementById('t2TaAvgMult').innerHTML = `מכפיל <span class="ltr-num">×${taAvgMult.toFixed(2)}</span>`;
+        document.getElementById('t2TaBest').innerHTML = fmtPct(taBest.taCagr, 1);
+        document.getElementById('t2TaBestYrs').textContent = taBest.label;
 
-        document.getElementById('t2KpiBest').innerHTML = formatPct(best.realCagr, 1);
-        document.getElementById('t2KpiBestPeriod').innerHTML = `${best.label} (מכפיל <span class="ltr-num">×${best.realMult.toFixed(2)}</span>)`;
+        // 70-Year S&P 500 Reference Strip (1956–2025 USD Real)
+        let refWins = 0, refCount = 0, refWorst = Infinity, refSum = 0;
+        for (let s = 1956; s <= 2025 - horizon + 1; s++) {
+          let f = 1.0, c = 1.0;
+          for (let y = s; y < s + horizon; y++) {
+            f *= (1 + DATA.sp500[y] / 100);
+            c *= (1 + DATA.usCpi[y] / 100);
+          }
+          const cagr = (Math.pow(f / c, 1 / horizon) - 1) * 100;
+          if (cagr >= 0) refWins++;
+          if (cagr < refWorst) refWorst = cagr;
+          refSum += cagr;
+          refCount++;
+        }
+        document.getElementById('t2Ref70Stats').innerHTML = `רווח ריאלי ב-${Math.round((refWins / refCount) * 100)}% מהתקופות (${refWins}/${refCount}) • ממוצע: ${fmtPct(refSum / refCount, 1)} • גרוע ביותר: ${fmtPct(refWorst, 1)}`;
 
-        document.getElementById('t2KpiBeatSafe').innerHTML = formatPct(beatSafePct, 0, false);
-        document.getElementById('t2KpiBeatSafeSub').textContent = `${beatSafeCount} מתוך ${total} תקופות`;
-
-        // Update Chart
-        document.getElementById('t2ChartTitle').textContent = `תשואה שנתית ריאלית (CAGR) לכל חלון של ${horizon} שנים (${tab2Mode === 'usd' ? 'דולר 1956–2025' : 'שקלים 1986–2025'})`;
-
+        // Rolling Comparison Chart
+        document.getElementById('t2ChartTitle').textContent = `תשואה שנתית ${isReal ? 'ריאלית' : 'נומינלית'} (CAGR) לכל חלון של ${horizon} שנים — S&P 500 בשקלים מול ת"א-125`;
         const ctx = document.getElementById('t2Chart').getContext('2d');
-        if (tab2ChartInstance) tab2ChartInstance.destroy();
+        if (t2Chart) t2Chart.destroy();
 
-        tab2ChartInstance = new Chart(ctx, {
+        t2Chart = new Chart(ctx, {
           type: 'bar',
           data: {
             labels: windows.map(w => w.label),
-            datasets: [{
-              label: 'תשואה שנתית ריאלית (%)',
-              data: windows.map(w => w.realCagr),
-              backgroundColor: windows.map(w => w.realCagr >= 0 ? '#10b981' : '#ef4444'),
-              borderRadius: 4
-            }]
+            datasets: [
+              {
+                label: 'S&P 500 (בשקלים)',
+                data: windows.map(w => w.spCagr),
+                backgroundColor: 'rgba(16, 185, 129, 0.85)',
+                borderRadius: 4
+              },
+              {
+                label: 'ת"א-125 (ישראל)',
+                data: windows.map(w => w.taCagr),
+                backgroundColor: 'rgba(37, 99, 235, 0.85)',
+                borderRadius: 4
+              }
+            ]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
             plugins: {
-              legend: { display: false },
+              legend: { position: 'top', labels: { usePointStyle: true, padding: 14, font: { weight: '600' } } },
               tooltip: {
                 rtl: true,
                 callbacks: {
                   title: (items) => `תקופה: ${items[0].label} (${horizon} שנים)`,
-                  label: (item) => {
-                    const w = windows[item.dataIndex];
-                    const lines = [
-                      ` תשואה שנתית ריאלית: ${formatPctPlain(w.realCagr, 2)}`,
-                      ` מכפיל כוח קנייה: ×${w.realMult.toFixed(2)}`,
-                      ` תשואה נומינלית מצטברת: ${formatPctPlain(w.nomPct, 0)}`,
-                      ` אינפלציה מצטברת: ${formatPctPlain(w.infPct, 0)}`
+                  afterBody: (items) => {
+                    const w = windows[items[0].dataIndex];
+                    return [
+                      `מכפיל S&P 500: ×${w.spMult.toFixed(2)} | מכפיל ת"א-125: ×${w.taMult.toFixed(2)}`,
+                      `שינוי הדולר בתקופה: ${fmtPctPlain(w.fxPct, 1)}`
                     ];
-                    if (tab2Mode === 'ils') {
-                      lines.push(` שינוי שער הדולר: ${formatPctPlain(w.fxPct, 1)}`);
-                    }
-                    lines.push(` מול השקעה בטוחה (${(safeRate * 100).toFixed(1)}%): ${w.beatSafe ? 'המניות ניצחו ✓' : 'ההשקעה הבטוחה ניצחה'}`);
-                    return lines;
-                  }
+                  },
+                  label: (c) => ` ${c.dataset.label}: ${fmtPctPlain(c.parsed.y, 2)} בשנה`
                 }
               }
             },
             scales: {
               y: {
-                grid: { color: (c) => c.tick.value === 0 ? '#0f172a' : '#f1f5f9', lineWidth: (c) => c.tick.value === 0 ? 1.5 : 1 },
+                grid: { color: (c) => c.tick.value === 0 ? '#0f172a' : '#f1f5f9', lineWidth: (c) => c.tick.value === 0 ? 1.8 : 1 },
                 ticks: { callback: (v) => `${v}%` }
               },
-              x: {
-                grid: { display: false },
-                ticks: { maxTicksLimit: 16 }
-              }
+              x: { grid: { display: false }, ticks: { maxTicksLimit: 15 } }
             }
           }
         });
@@ -1291,203 +1638,199 @@
     }
 
     /*************************************************************************
-     * 7. TAB 3: FUTURE SIMULATOR (FX, INFLATION, HEDGING & TAX)
+     * 7. TAB 3: FUTURE SIMULATOR (5 TRACKS + MIXED PORTFOLIO + BREAKDOWN)
      *************************************************************************/
+    function setTab3Real(isReal) {
+      state.t3Real = isReal;
+      const rBtn = document.getElementById('t3RealBtn');
+      const nBtn = document.getElementById('t3NomBtn');
+      if (isReal) {
+        rBtn.className = 'py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
+        nBtn.className = 'py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+      } else {
+        nBtn.className = 'py-1.5 rounded-lg text-xs font-bold bg-white text-blue-700 shadow-sm transition';
+        rBtn.className = 'py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+      }
+      renderTab3();
+    }
+
     function renderTab3() {
       try {
         const init = parseFloat(document.getElementById('t3Init').value);
         const monthly = parseFloat(document.getElementById('t3Monthly').value);
         const years = parseInt(document.getElementById('t3Years').value, 10);
-        const spRet = parseFloat(document.getElementById('t3SpReturn').value) / 100;
-        const inf = parseFloat(document.getElementById('t3Inflation').value) / 100;
+        const spRet = parseFloat(document.getElementById('t3SpRet').value) / 100;
+        const taRet = parseFloat(document.getElementById('t3TaRet').value) / 100;
+        const inf = parseFloat(document.getElementById('t3Inf').value) / 100;
+        const safeRet = parseFloat(document.getElementById('t3SafeRet').value) / 100;
         const fxStart = parseFloat(document.getElementById('t3FxStart').value);
         const fxEnd = parseFloat(document.getElementById('t3FxEnd').value);
-        const hedgeCost = parseFloat(document.getElementById('t3HedgeCost').value) / 100;
-        const safeRet = parseFloat(document.getElementById('t3SafeReturn').value) / 100;
+        const hedgeCost = parseFloat(document.getElementById('t3Hedge').value) / 100;
+        const mixSpPct = parseInt(document.getElementById('t3Mix').value, 10);
+        const mixTaPct = 100 - mixSpPct;
         const useTax = document.getElementById('t3Tax').checked;
-        const useFee = document.getElementById('t3Fee').checked;
+        const isReal = state.t3Real;
 
-        // Live readouts
-        document.getElementById('t3InitVal').textContent = formatCurrencyPlain(init, '₪');
-        document.getElementById('t3MonthlyVal').textContent = formatCurrencyPlain(monthly, '₪');
+        // Live labels
+        document.getElementById('t3InitVal').textContent = fmtCurrPlain(init, '₪');
+        document.getElementById('t3MonthlyVal').textContent = fmtCurrPlain(monthly, '₪');
         document.getElementById('t3YearsVal').textContent = years === 1 ? 'שנה 1' : `${years} שנים`;
-        document.getElementById('t3SpReturnVal').textContent = `${(spRet * 100).toFixed(1)}%`;
-        document.getElementById('t3InflationVal').textContent = `${(inf * 100).toFixed(2).replace(/\.00$/, '.0')}%`;
+        document.getElementById('t3SpRetVal').textContent = `${(spRet * 100).toFixed(1)}%`;
+        document.getElementById('t3TaRetVal').textContent = `${(taRet * 100).toFixed(1)}%`;
+        document.getElementById('t3InfVal').textContent = `${(inf * 100).toFixed(2).replace(/\.00$/, '.0')}%`;
+        document.getElementById('t3SafeRetVal').textContent = `${(safeRet * 100).toFixed(2).replace(/\.00$/, '.0')}%`;
         document.getElementById('t3FxStartVal').textContent = `₪${fxStart.toFixed(2)}`;
         document.getElementById('t3FxEndVal').textContent = `₪${fxEnd.toFixed(2)}`;
-        document.getElementById('t3HedgeCostVal').textContent = `${(hedgeCost * 100).toFixed(1)}%`;
-        document.getElementById('t3SafeReturnVal').textContent = `${(safeRet * 100).toFixed(2).replace(/\.00$/, '.0')}%`;
+        document.getElementById('t3HedgeVal').textContent = `${(hedgeCost * 100).toFixed(1)}%`;
+        document.getElementById('t3MixVal').textContent = `${mixSpPct}% S&P / ${mixTaPct}% ת"א`;
+        document.getElementById('t3MixCardTitle').textContent = `תיק משולב (${mixSpPct}% S&P + ${mixTaPct}% ת"א-125)`;
 
-        const fee = useFee ? 0.001 : 0;
-        const totalMonths = years * 12;
-
+        const months = years * 12;
         const mInf = Math.pow(1 + inf, 1 / 12);
-        const mFx = Math.pow(fxEnd / fxStart, 1 / totalMonths);
-        const mSpConstFx = Math.pow(Math.max(1 + spRet - fee, 0.01), 1 / 12);
-        const mSpUnhedged = mSpConstFx * mFx;
-        const mSpHedged = Math.pow(Math.max(1 + spRet - fee - hedgeCost, 0.01), 1 / 12);
+        const mFx = Math.pow(fxEnd / fxStart, 1 / months);
+        const mSpConst = Math.pow(1 + spRet, 1 / 12);
+        const mSpUn = mSpConst * mFx;
+        const mSpHed = Math.pow(Math.max(1 + spRet - hedgeCost, 0.01), 1 / 12);
+        const mTa = Math.pow(1 + taRet, 1 / 12);
         const mSafe = Math.pow(1 + safeRet, 1 / 12);
 
-        let nomUnhedged = init;
-        let nomConstFx = init;
-        let nomHedged = init;
-        let nomSafe = init;
-        let indexedBasis = init;
-        let totalDep = init;
-        let cumInf = 1.0;
+        // Monthly blended return for rebalanced mixed portfolio
+        const wSp = mixSpPct / 100;
+        const wTa = mixTaPct / 100;
+        const mMix = (wSp * mSpUn) + (wTa * mTa);
+
+        let nomSpUn = init, nomSpConst = init, nomSpHed = init, nomTa = init, nomMix = init, nomSafe = init;
+        let indexedBasis = init, totalDep = init, cumInf = 1.0;
 
         const labels = ['שנה 0'];
-        const seriesUnhedged = [init];
-        const seriesHedged = [init];
-        const seriesSafe = [init];
-        const seriesPrincipal = [init];
+        const sSpUn = [init], sSpHed = [init], sTa = [init], sMix = [init], sSafe = [init], sPrin = [init];
 
-        const calcNetReal = (nomVal, basis, infFactor) => {
+        const calcDisp = (nomVal, basis, infF) => {
           const tax = useTax ? Math.max(0, nomVal - basis) * 0.25 : 0;
-          return (nomVal - tax) / infFactor;
+          const netNom = nomVal - tax;
+          return isReal ? (netNom / infF) : netNom;
         };
 
-        for (let m = 1; m <= totalMonths; m++) {
-          nomUnhedged = (nomUnhedged + monthly) * mSpUnhedged;
-          nomConstFx = (nomConstFx + monthly) * mSpConstFx;
-          nomHedged = (nomHedged + monthly) * mSpHedged;
+        for (let m = 1; m <= months; m++) {
+          nomSpUn = (nomSpUn + monthly) * mSpUn;
+          nomSpConst = (nomSpConst + monthly) * mSpConst;
+          nomSpHed = (nomSpHed + monthly) * mSpHed;
+          nomTa = (nomTa + monthly) * mTa;
+          nomMix = (nomMix + monthly) * mMix;
           nomSafe = (nomSafe + monthly) * mSafe;
           indexedBasis = (indexedBasis + monthly) * mInf;
           totalDep += monthly;
           cumInf *= mInf;
 
           if (m % 12 === 0) {
-            const yr = m / 12;
-            labels.push(`שנה ${yr}`);
-            seriesUnhedged.push(calcNetReal(nomUnhedged, indexedBasis, cumInf));
-            seriesHedged.push(calcNetReal(nomHedged, indexedBasis, cumInf));
-            seriesSafe.push(calcNetReal(nomSafe, indexedBasis, cumInf));
-            seriesPrincipal.push(indexedBasis / cumInf); // real value of deposits in today's ILS
+            labels.push(`שנה ${m / 12}`);
+            sSpUn.push(calcDisp(nomSpUn, indexedBasis, cumInf));
+            sSpHed.push(calcDisp(nomSpHed, indexedBasis, cumInf));
+            sTa.push(calcDisp(nomTa, indexedBasis, cumInf));
+            sMix.push(calcDisp(nomMix, indexedBasis, cumInf));
+            sSafe.push(calcDisp(nomSafe, indexedBasis, cumInf));
+            sPrin.push(isReal ? (indexedBasis / cumInf) : totalDep);
           }
         }
 
-        const taxUnhedged = useTax ? Math.max(0, nomUnhedged - indexedBasis) * 0.25 : 0;
-        const netNomUnhedged = nomUnhedged - taxUnhedged;
-        const netRealUnhedged = netNomUnhedged / cumInf;
+        const fSpUn = sSpUn[sSpUn.length - 1];
+        const fSpHed = sSpHed[sSpHed.length - 1];
+        const fTa = sTa[sTa.length - 1];
+        const fMix = sMix[sMix.length - 1];
+        const fSafe = sSafe[sSafe.length - 1];
+        const fPrin = sPrin[sPrin.length - 1];
 
-        const netRealHedged = seriesHedged[seriesHedged.length - 1];
-        const netRealSafe = seriesSafe[seriesSafe.length - 1];
-        const realPrincipal = seriesPrincipal[seriesPrincipal.length - 1];
+        const modeTxt = isReal ? 'מכפיל ריאלי' : 'מכפיל נומינלי';
+        document.getElementById('t3ValSpUn').innerHTML = fmtCurr(fSpUn, '₪');
+        document.getElementById('t3SubSpUn').innerHTML = `${modeTxt}: <span class="ltr-num">×${(fSpUn / fPrin).toFixed(2)}</span>`;
 
-        // Update Comparison Cards & Highlight Winner
-        document.getElementById('t3ValUnhedged').innerHTML = formatCurrency(netRealUnhedged, '₪');
-        document.getElementById('t3SubUnhedged').innerHTML = `מכפיל ריאלי: <span class="ltr-num">×${(netRealUnhedged / realPrincipal).toFixed(2)}</span>`;
+        document.getElementById('t3ValSpHed').innerHTML = fmtCurr(fSpHed, '₪');
+        document.getElementById('t3SubSpHed').innerHTML = `${modeTxt}: <span class="ltr-num">×${(fSpHed / fPrin).toFixed(2)}</span>`;
 
-        document.getElementById('t3ValHedged').innerHTML = formatCurrency(netRealHedged, '₪');
-        document.getElementById('t3SubHedged').innerHTML = `מכפיל ריאלי: <span class="ltr-num">×${(netRealHedged / realPrincipal).toFixed(2)}</span>`;
+        document.getElementById('t3ValTa').innerHTML = fmtCurr(fTa, '₪');
+        document.getElementById('t3SubTa').innerHTML = `${modeTxt}: <span class="ltr-num">×${(fTa / fPrin).toFixed(2)}</span>`;
 
-        document.getElementById('t3ValSafe').innerHTML = formatCurrency(netRealSafe, '₪');
-        document.getElementById('t3SubSafe').innerHTML = `מכפיל ריאלי: <span class="ltr-num">×${(netRealSafe / realPrincipal).toFixed(2)}</span>`;
+        document.getElementById('t3ValMix').innerHTML = fmtCurr(fMix, '₪');
+        document.getElementById('t3SubMix').innerHTML = `${modeTxt}: <span class="ltr-num">×${(fMix / fPrin).toFixed(2)}</span>`;
 
-        const maxVal = Math.max(netRealUnhedged, netRealHedged, netRealSafe);
+        document.getElementById('t3ValSafe').innerHTML = fmtCurr(fSafe, '₪');
+        document.getElementById('t3SubSafe').innerHTML = `${modeTxt}: <span class="ltr-num">×${(fSafe / fPrin).toFixed(2)}</span>`;
+
+        // Winner Highlight
+        const best = Math.max(fSpUn, fSpHed, fTa, fMix, fSafe);
         const cards = [
-          { el: 't3CardUnhedged', badge: 't3BadgeUnhedged', val: netRealUnhedged, border: 'border-emerald-500' },
-          { el: 't3CardHedged', badge: 't3BadgeHedged', val: netRealHedged, border: 'border-blue-500' },
-          { el: 't3CardSafe', badge: 't3BadgeSafe', val: netRealSafe, border: 'border-slate-500' }
+          { id: 't3CardSpUn', badge: 't3BadgeSpUn', val: fSpUn, border: 'border-emerald-500' },
+          { id: 't3CardSpHed', badge: 't3BadgeSpHed', val: fSpHed, border: 'border-amber-500' },
+          { id: 't3CardTa', badge: 't3BadgeTa', val: fTa, border: 'border-blue-600' },
+          { id: 't3CardMix', badge: 't3BadgeMix', val: fMix, border: 'border-purple-600' },
+          { id: 't3CardSafe', badge: 't3BadgeSafe', val: fSafe, border: 'border-slate-500' }
         ];
         cards.forEach(c => {
-          const cardEl = document.getElementById(c.el);
-          const badgeEl = document.getElementById(c.badge);
-          cardEl.classList.remove('border-2', 'border-emerald-500', 'border-blue-500', 'border-slate-500', 'border', 'border-slate-200');
-          if (Math.abs(c.val - maxVal) < 1) {
-            cardEl.classList.add('border-2', c.border);
-            badgeEl.classList.remove('hidden');
+          const el = document.getElementById(c.id);
+          const bg = document.getElementById(c.badge);
+          el.classList.remove('border-2', 'border-emerald-500', 'border-amber-500', 'border-blue-600', 'border-purple-600', 'border-slate-500', 'border', 'border-slate-200');
+          if (Math.abs(c.val - best) < 1) {
+            el.classList.add('border-2', c.border);
+            bg.classList.remove('hidden');
           } else {
-            cardEl.classList.add('border', 'border-slate-200');
-            badgeEl.classList.add('hidden');
+            el.classList.add('border', 'border-slate-200');
+            bg.classList.add('hidden');
           }
         });
 
-        // Exact Breakdown for Unhedged S&P 500
-        const marketGain = nomConstFx - totalDep;
-        const fxImpact = nomUnhedged - nomConstFx;
-        const infErosion = netNomUnhedged - netRealUnhedged;
+        // Breakdown Bar for Unhedged S&P 500
+        const taxSpUn = useTax ? Math.max(0, nomSpUn - indexedBasis) * 0.25 : 0;
+        const netNomSpUn = nomSpUn - taxSpUn;
+        const netRealSpUn = netNomSpUn / cumInf;
+        const marketGain = nomSpConst - totalDep;
+        const fxImpact = nomSpUn - nomSpConst;
+        const infErosion = netNomSpUn - netRealSpUn;
         const fxPct = ((fxEnd / fxStart) - 1) * 100;
 
-        document.getElementById('t3FxDeltaBadge').innerHTML = `שינוי שער הדולר: ${formatPct(fxPct, 1)} (<span class="ltr-num">₪${fxStart.toFixed(2)} → ₪${fxEnd.toFixed(2)}</span>)`;
-        document.getElementById('t3BrkDeposits').innerHTML = formatCurrency(totalDep, '₪');
-        document.getElementById('t3BrkMarket').innerHTML = formatCurrency(marketGain, '₪');
-        document.getElementById('t3BrkFx').innerHTML = (fxImpact >= 0 ? '+' : '') + formatCurrency(fxImpact, '₪');
-        document.getElementById('t3BrkTax').innerHTML = taxUnhedged > 0 ? formatCurrency(-taxUnhedged, '₪') : '₪0';
-        document.getElementById('t3BrkInf').innerHTML = infErosion > 0 ? formatCurrency(-infErosion, '₪') : '₪0';
-        document.getElementById('t3BrkNetReal').innerHTML = formatCurrency(netRealUnhedged, '₪');
+        document.getElementById('t3FxSummaryBadge').innerHTML = `שינוי שער הדולר: ${fmtPct(fxPct, 1)} (<span class="ltr-num">₪${fxStart.toFixed(2)} → ₪${fxEnd.toFixed(2)}</span>)`;
+        document.getElementById('t3BrkDep').innerHTML = fmtCurr(totalDep, '₪');
+        document.getElementById('t3BrkMarket').innerHTML = fmtCurr(marketGain, '₪');
+        document.getElementById('t3BrkFx').innerHTML = (fxImpact >= 0 ? '+' : '') + fmtCurr(fxImpact, '₪');
+        document.getElementById('t3BrkTax').innerHTML = taxSpUn > 0 ? fmtCurr(-taxSpUn, '₪') : '₪0';
+        document.getElementById('t3BrkInf').innerHTML = infErosion > 0 ? fmtCurr(-infErosion, '₪') : '₪0';
+        document.getElementById('t3BrkNet').innerHTML = fmtCurr(netRealSpUn, '₪');
 
-        // Color FX box based on positive/negative FX move
-        const fxBox = document.getElementById('t3BrkFxBox');
-        const fxValEl = document.getElementById('t3BrkFx');
+        const fxCard = document.getElementById('t3BrkFxCard');
+        const fxEl = document.getElementById('t3BrkFx');
         if (fxImpact < 0) {
-          fxBox.className = 'bg-rose-50 rounded-xl p-2.5 border border-rose-200';
-          fxValEl.className = 'text-sm font-extrabold text-rose-700 mt-0.5 tabular-nums';
+          fxCard.className = 'bg-rose-50 rounded-xl p-2.5 border border-rose-200';
+          fxEl.className = 'text-xs sm:text-sm font-extrabold text-rose-700 mt-0.5 tabular-nums';
         } else {
-          fxBox.className = 'bg-blue-50 rounded-xl p-2.5 border border-blue-200';
-          fxValEl.className = 'text-sm font-extrabold text-blue-700 mt-0.5 tabular-nums';
+          fxCard.className = 'bg-blue-50 rounded-xl p-2.5 border border-blue-200';
+          fxEl.className = 'text-xs sm:text-sm font-extrabold text-blue-700 mt-0.5 tabular-nums';
         }
 
-        // Stacked proportion bar (visualizing Gross Nominal split into Net Real, Tax, Inflation Erosion)
-        const grossTotal = Math.max(nomUnhedged, 1);
-        const wNetReal = Math.max(0, (netRealUnhedged / grossTotal) * 100);
-        const wTax = Math.max(0, (taxUnhedged / grossTotal) * 100);
-        const wInf = Math.max(0, (infErosion / grossTotal) * 100);
-        document.getElementById('t3BreakdownBar').innerHTML = `
-          <div style="width:${wNetReal.toFixed(1)}%" class="bg-emerald-500 h-full transition-all" title="נטו ריאלי ביד"></div>
+        const gross = Math.max(nomSpUn, 1);
+        const wNet = Math.max(0, (netRealSpUn / gross) * 100);
+        const wTax = Math.max(0, (taxSpUn / gross) * 100);
+        const wInf = Math.max(0, (infErosion / gross) * 100);
+        document.getElementById('t3StackedBar').innerHTML = `
+          <div style="width:${wNet.toFixed(1)}%" class="bg-emerald-500 h-full transition-all" title="נטו ריאלי ביד"></div>
           <div style="width:${wTax.toFixed(1)}%" class="bg-amber-400 h-full transition-all" title="מס רווחי הון"></div>
           <div style="width:${wInf.toFixed(1)}%" class="bg-red-400 h-full transition-all" title="שחיקת אינפלציה"></div>
         `;
 
-        // Render Chart
+        // Render Future Growth Chart
+        document.getElementById('t3ChartTitle').textContent = `תחזית צמיחת התיק לאורך ${years} שנים (${isReal ? 'כוח קנייה ריאלי בשקלים של היום' : 'שווי נומינלי עתידי'}${useTax ? ', נטו אחרי מס' : ''})`;
         const ctx = document.getElementById('t3Chart').getContext('2d');
-        if (tab3ChartInstance) tab3ChartInstance.destroy();
+        if (t3Chart) t3Chart.destroy();
 
-        tab3ChartInstance = new Chart(ctx, {
+        t3Chart = new Chart(ctx, {
           type: 'line',
           data: {
             labels,
             datasets: [
-              {
-                label: 'S&P 500 חשוף לדולר (נטו ריאלי)',
-                data: seriesUnhedged,
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16, 185, 129, 0.08)',
-                borderWidth: 3,
-                pointRadius: 0,
-                pointHoverRadius: 5,
-                tension: 0.25,
-                fill: true
-              },
-              {
-                label: 'S&P 500 מגודר מט"ח (נטו ריאלי)',
-                data: seriesHedged,
-                borderColor: '#2563eb',
-                borderWidth: 2.5,
-                pointRadius: 0,
-                pointHoverRadius: 5,
-                tension: 0.25,
-                fill: false
-              },
-              {
-                label: 'השקעה בטוחה / פיקדון (נטו ריאלי)',
-                data: seriesSafe,
-                borderColor: '#64748b',
-                borderWidth: 2,
-                pointRadius: 0,
-                pointHoverRadius: 4,
-                tension: 0.25,
-                fill: false
-              },
-              {
-                label: 'סך הקרן שהופקדה (בכוח קנייה)',
-                data: seriesPrincipal,
-                borderColor: '#94a3b8',
-                borderDash: [6, 4],
-                borderWidth: 1.5,
-                pointRadius: 0,
-                fill: false
-              }
+              { label: 'S&P 500 חשוף לדולר', data: sSpUn, borderColor: '#10b981', borderWidth: 3, pointRadius: 0, pointHoverRadius: 5, tension: 0.25 },
+              { label: 'ת"א-125 (ישראל)', data: sTa, borderColor: '#2563eb', borderWidth: 3, pointRadius: 0, pointHoverRadius: 5, tension: 0.25 },
+              { label: `תיק משולב (${mixSpPct}/${mixTaPct})`, data: sMix, borderColor: '#7c3aed', borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 5, tension: 0.25 },
+              { label: 'S&P 500 מגודר מט"ח', data: sSpHed, borderColor: '#d97706', borderWidth: 2, borderDash: [4, 3], pointRadius: 0, pointHoverRadius: 4, tension: 0.25 },
+              { label: 'השקעה בטוחה', data: sSafe, borderColor: '#64748b', borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: 0.25 },
+              { label: 'סך הקרן שהופקדה', data: sPrin, borderColor: '#94a3b8', borderDash: [6, 4], borderWidth: 1.5, pointRadius: 0 }
             ]
           },
           options: {
@@ -1495,23 +1838,18 @@
             maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
             plugins: {
-              legend: { position: 'top', labels: { usePointStyle: true, padding: 14, font: { size: 11, weight: '600' } } },
+              legend: { position: 'top', labels: { usePointStyle: true, padding: 12, font: { size: 11, weight: '600' } } },
               tooltip: {
                 rtl: true,
-                callbacks: {
-                  label: (c) => ` ${c.dataset.label}: ${formatCurrencyPlain(c.parsed.y, '₪')}`
-                }
+                callbacks: { label: (c) => ` ${c.dataset.label}: ${fmtCurrPlain(c.parsed.y, '₪')}` }
               }
             },
             scales: {
               y: {
                 grid: { color: '#f1f5f9' },
-                ticks: { callback: (v) => formatCurrencyPlain(v, '₪') }
+                ticks: { callback: (v) => fmtCurrPlain(v, '₪') }
               },
-              x: {
-                grid: { display: false },
-                ticks: { maxTicksLimit: 10 }
-              }
+              x: { grid: { display: false }, ticks: { maxTicksLimit: 10 } }
             }
           }
         });
@@ -1521,12 +1859,10 @@
     }
 
     /*************************************************************************
-     * 8. INITIALIZATION ON LOAD
+     * 8. INITIALIZE ON PAGE LOAD
      *************************************************************************/
     window.addEventListener('DOMContentLoaded', () => {
-      populateTab1Years(1986);
-      document.getElementById('t1StartYear').value = 2006;
-      document.getElementById('t1EndYear').value = 2025;
+      populateTab1Years();
       renderTab1();
     });
   </script>
